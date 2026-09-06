@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-email"
+version = "0.1.1"
+description = "NAVIG Email module — Gmail accounts, filter→notify triage, scheduled briefings & send. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "email", "imap", "smtp", "inbox"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Relies on navig-core in the same env (uses navig.connectors for Gmail auth,
+# navig.notify for delivery, navig.llm for briefings). No hard third-party deps.
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+dependencies = ["navig>=3.25.0"]
+
+# register() mounts the Email deck routes via gateway:register_routes + registers
+# the free "email" module in the registry (discovered by load_entry_point_plugins).
+[project.entry-points."navig.plugins"]
+email = "navig_email.plugin"
+
+# The `navig email` CLI, discovered by the navig.commands seam.
+[project.entry-points."navig.commands"]
+email = "navig_email.commands.email:email_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_email*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_email = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

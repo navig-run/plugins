@@ -1,0 +1,6 @@
+{
+  "name": "demo-with-plugins",
+  "scripts": {
+    "dev": "vite"
+  }
+}

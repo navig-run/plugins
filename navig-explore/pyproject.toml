@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-explore"
+version = "0.1.1"
+description = "NAVIG Explore module — a universal local media/data explorer for ANY folder. Buckets files by type (image/gif/video/audio/text/document/archive), auto-reads Telegram exports, previews everything, and organizes by drag-to-class. Non-destructive. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "explore", "files", "media", "telegram", "browser"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Relies on navig-core being installed in the same environment. Thumbnails use
+# Pillow (images) + ffmpeg on PATH (video posters); both optional — without them
+# the explorer still runs, media just shows type icons.
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+dependencies = ["navig>=3.25.0", "Pillow>=9"]
+
+# The vision pass (`navig explore photos index|faces|search|people`) is opt-in:
+# torch alone is a ~2 GB install, and the explorer must stay usable without it.
+# Every module degrades with an actionable message rather than an ImportError.
+#   torch/open_clip  — SigLIP 2 embeddings (semantic search, content classes)
+#   opencv           — YuNet+SFace faces (Apache-2.0; no extra model licence)
+#   scikit-learn     — HDBSCAN face clustering
+#   imagehash        — pHash, for near-duplicate twin dating
+#   pytesseract      — reading burned-in webcam timestamps (needs tesseract on PATH)
+#   transformers     — SigLIP's text tokenizer; only needed for text QUERIES
+[project.optional-dependencies]
+vision = [
+  "torch>=2.2",
+  "open_clip_torch>=2.24",
+  "opencv-python-headless>=4.9",
+  "scikit-learn>=1.3",
+  "scipy>=1.11",
+  "imagehash>=4.3",
+  "pytesseract>=0.3.10",
+  "transformers>=4.40",
+  "numpy>=1.24",
+]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot.
+[project.entry-points."navig.plugins"]
+explore = "navig_explore.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+# `navig explore` = interactive web explorer; `navig telegram-exports` = the
+# batch/offline ChatExport organizer (same domain: organizing local export folders).
+[project.entry-points."navig.commands"]
+explore = "navig_explore.commands.explore:explore_app"
+telegram-exports = "navig_explore.telegram_exports:telegram_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_explore*"]
+
+[tool.setuptools.package-data]
+# "*.html" = explorer UI assets; "skills/**/*.md" = agent-discovered capability skills.
+navig_explore = ["*.html", "skills/**/*.md", "vision/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

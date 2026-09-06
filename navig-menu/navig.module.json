@@ -1,0 +1,15 @@
+{
+  "id": "navig-menu",
+  "name": "Menu",
+  "kind": "launcher",
+  "description": "AI-first project menu — auto-detects the stack and builds a premium interactive terminal menu. Standalone (npm) or via `navig menu`.",
+  "version": "1.0.0",
+  "icon": "menu",
+  "category": "tools",
+  "entry": { "npm": "navig-menu", "bin": "navig-menu", "launch": "navig menu" },
+  "surfaces": ["cli:menu"],
+  "requires": [],
+  "homepage": "https://navig.run/menu",
+  "repository": "https://github.com/navig-run/menu.git",
+  "source": "launcher"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "hello",
+  "detect": { "scripts": "^dev$" },
+  "text": { "tagline": "team console" },
+  "bannerPhrases": ["hello from json"],
+  "sections": [
+    {
+      "group": "Team",
+      "meta": { "title": "TEAM", "ascii": "t", "tone": "cyan" },
+      "actions": [{ "id": "team.docs", "label": "Docs", "cmd": "echo docs" }]
+    }
+  ],
+  "about": ["hello plugin"]
+}

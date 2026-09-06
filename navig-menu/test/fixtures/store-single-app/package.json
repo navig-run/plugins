@@ -1,0 +1,11 @@
+{
+  "name": "anchor-app",
+  "description": "single-app desktop project (tauri-like) publishing one MSIX to the Microsoft Store",
+  "scripts": {
+    "dev": "vite",
+    "tauri:build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

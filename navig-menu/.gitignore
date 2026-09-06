@@ -1,0 +1,13 @@
+node_modules/
+_nm_old_*/
+_nm_broken_*/
+dist/
+out/
+coverage/
+*.log
+.DS_Store
+
+# Generated menu cache is machine-local; the human-owned .navig/menu.json IS versioned.
+# Glob so nested fixtures/subprojects are covered too, not just the repo root.
+**/.navig/menu.cache.json
+**/.navig/menu.recent.json

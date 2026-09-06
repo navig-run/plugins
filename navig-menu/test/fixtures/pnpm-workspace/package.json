@@ -1,0 +1,10 @@
+{
+  "name": "pnpm-monorepo",
+  "description": "A pnpm workspace monorepo",
+  "packageManager": "pnpm@9.14.4",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://menu.navig.run/schema/v1.json",
+  "title": "navig-menu definition",
+  "description": "Human/AI-owned menu definition (.navig/menu.json). Wins over detection; merged on re-build.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "title": { "type": "string" },
+    "purpose": { "type": "string" },
+    "accent": { "enum": ["cyan", "blue", "green", "magenta", "purple", "yellow", "red"] },
+    "packageManager": { "enum": ["npm", "pnpm", "yarn", "bun"] },
+    "actions": {
+      "type": "object",
+      "description": "Canonical action key → command (string) or detailed object.",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "required": ["cmd"],
+            "additionalProperties": false,
+            "properties": {
+              "cmd": { "type": "string" },
+              "label": { "type": "string" },
+              "description": { "type": "string" },
+              "risk": { "enum": ["safe", "confirm", "dangerous"] },
+              "longRunning": { "type": "boolean" },
+              "group": { "type": "string" },
+              "why": { "type": "string" }
+            }
+          }
+        ]
+      }
+    },
+    "hide": { "type": "array", "items": { "type": "string" } },
+    "overrides": {
+      "type": "object",
+      "description": "Relabel / regroup / redescribe a detected script by its id.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string" },
+          "description": { "type": "string" },
+          "group": { "type": "string" },
+          "risk": { "enum": ["safe", "confirm", "dangerous"] },
+          "longRunning": { "type": "boolean" },
+          "hide": { "type": "boolean" }
+        }
+      }
+    },
+    "groups": {
+      "type": "array",
+      "description": "Custom section presentation + order (listed groups render first).",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "title": { "type": "string" },
+          "icon": { "type": "string" },
+          "ascii": { "type": "string" },
+          "tone": { "type": "string" }
+        }
+      }
+    },
+    "extra": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "cmd"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "cmd": { "type": "string" },
+          "description": { "type": "string" },
+          "group": { "type": "string" },
+          "risk": { "enum": ["safe", "confirm", "dangerous"] },
+          "longRunning": { "type": "boolean" },
+          "cwd": { "type": "string" },
+          "why": { "type": "string" }
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "description": "Terminal UI preferences. Runtime history stays in .navig/menu.recent.json.",
+      "additionalProperties": false,
+      "properties": {
+        "recentLimit": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "showDescriptions": { "type": "boolean" },
+        "showCommandHints": { "type": "boolean" },
+        "showCounts": { "type": "boolean" },
+        "showRiskBadges": { "type": "boolean" },
+        "showRecents": { "type": "boolean" },
+        "showNavigSection": { "type": "boolean" },
+        "glyphs": { "enum": ["emoji", "unicode", "ascii"] },
+        "accent": { "enum": ["cyan", "blue", "green", "magenta", "purple", "yellow", "red"] },
+        "density": { "enum": ["comfortable", "compact"] },
+        "layout": { "enum": ["flat", "categories", "tree"] },
+        "bannerStyle": { "enum": ["cosmic", "console"] },
+        "banner": {
+          "type": "object",
+          "description": "Per-row banner visibility. Each row also requires its data to exist.",
+          "additionalProperties": false,
+          "properties": {
+            "spacedTitle": { "type": "boolean" },
+            "tagline": { "type": "string" },
+            "endpoints": { "type": "boolean" },
+            "stack": { "type": "boolean" },
+            "git": { "type": "boolean" },
+            "runtime": { "type": "boolean" },
+            "date": { "type": "boolean" },
+            "packages": { "type": "boolean" },
+            "stats": { "type": "boolean" },
+            "plugins": { "type": "boolean" }
+          }
+        },
+        "footer": { "type": "string" }
+      }
+    },
+    "plugins": {
+      "type": "object",
+      "description": "Plugin activation + per-plugin settings. Toggle via the in-menu Plugins manager.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "settings": {
+            "type": "object",
+            "additionalProperties": { "type": ["boolean", "string"] }
+          }
+        }
+      }
+    },
+    "defaultHost": { "type": "string" }
+  }
+}

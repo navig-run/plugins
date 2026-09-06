@@ -1,0 +1,20 @@
+{
+  "name": "next-stripe-cf",
+  "description": "Next.js app with Stripe and Cloudflare",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "deploy": "wrangler deploy",
+    "db:reset": "prisma migrate reset --force"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "stripe": "^16.0.0",
+    "@prisma/client": "^5.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0",
+    "prisma": "^5.0.0"
+  }
+}

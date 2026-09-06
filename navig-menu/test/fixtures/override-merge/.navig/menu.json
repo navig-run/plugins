@@ -1,0 +1,13 @@
+{
+  "$schema": "https://menu.navig.run/schema/v1.json",
+  "title": "Override Demo",
+  "purpose": "Shows override precedence",
+  "accent": "magenta",
+  "actions": {
+    "dev": { "cmd": "pnpm dev", "label": "Dev (overridden)", "risk": "safe" }
+  },
+  "hide": ["prepare"],
+  "extra": [
+    { "id": "studio", "label": "DB Studio", "cmd": "pnpm drizzle-kit studio", "group": "Data & Services", "longRunning": true }
+  ]
+}

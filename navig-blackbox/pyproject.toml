@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-blackbox"
+version = "0.1.1"
+description = "NAVIG Blackbox — a standalone flight-recorder & crash black-box for any Python app: append-only event log, sys.excepthook crash capture, and sealed .navbox incident bundles. Installs without navig; also wired into `navig blackbox`."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "blackbox", "flight-recorder", "crash", "postmortem", "incident", "diagnostics", "excepthook", "observability"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Debuggers",
+  "Topic :: System :: Logging",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Standalone-first: `pip install navig-blackbox` works on its own (rich for rendering,
+# typer for the CLI; stdlib for the recorder/bundler). It does NOT declare navig-core as a
+# dep — core installs the plugin, not the reverse. Every navig-internal touchpoint (console,
+# atomic writes, paths, version, vault encryption) is routed through navig_blackbox._compat,
+# which delegates to navig when present and falls back cleanly otherwise.
+dependencies = [
+  "rich>=13.7.0",
+  "typer>=0.14.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "ruff>=0.6.0"]
+
+[project.scripts]
+navig-blackbox = "navig_blackbox.cli:main"
+nbb = "navig_blackbox.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot; register()
+# adds the free "blackbox" module. No navig.commands entry — the `navig blackbox` verb stays
+# a core command (core/navig/commands/blackbox.py), now backed by this engine via the shim.
+[project.entry-points."navig.plugins"]
+blackbox = "navig_blackbox.plugin"
+
+[tool.setuptools.packages.find]
+include = ["navig_blackbox*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100

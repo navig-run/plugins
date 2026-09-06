@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "apps": [
+    {
+      "id": "anchor",
+      "name": "Anchor",
+      "appId": "9NANCHOR0001",
+      "identity": "AcmeSoft.Anchor",
+      "package": "src-tauri/target/release/bundle/msix/*.msixupload",
+      "metadata": "store/metadata.json",
+      "screenshots": "store/screenshots"
+    }
+  ]
+}

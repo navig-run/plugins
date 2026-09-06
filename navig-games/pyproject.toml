@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-games"
+version = "0.9.9"
+description = "NAVIG Games — proactively find & auto-claim FREE games (Epic now; GOG/Amazon/Steam next) and manage your game library. A first-party navig plugin (free, toggleable). FREE-ONLY: never spends real money."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "games", "epic", "steam", "free-games"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use. The navig[extra] -> plugin -> navig
+# cycle is fine (verified resolving AND installing under both pip and uv; in this
+# monorepo uv resolves it to the local root project via [tool.uv.sources]).
+# The games engine is bundled
+# in-package (navig_games.engine) and mounted in-process into `navig games`.
+# Browser automation, vault, notify and scheduling all come from navig-core.
+dependencies = ["navig>=3.25.0", "requests>=2.31.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "games" module + agent tools.
+[project.entry-points."navig.plugins"]
+games = "navig_games.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+games = "navig_games.commands.games:games_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_games*"]
+
+[tool.setuptools.package-data]
+# Ship the bundled intent-routing skill in the wheel.
+navig_games = ["skills/**/*.md"]
+
+[tool.ruff]
+line-length = 100
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

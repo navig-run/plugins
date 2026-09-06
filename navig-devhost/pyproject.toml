@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-devhost"
+version = "0.1.1"
+description = "NAVIG Dev Host module — give any local dev server a real .test domain over trusted HTTPS in one command (hosts + mkcert + raw TLS relay), wired into `navig devhost`. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "devhost", "https", "tls", "mkcert", "localhost", "dns"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Relies on navig-core in the same environment (not declared — core installs the
+# plugin, not the reverse). Zero Python deps: the relay uses stdlib ssl/socket, and
+# mkcert is an external binary. typer/rich come with navig-core.
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+dependencies = ["navig>=3.25.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins(); register() adds the
+# free "devhost" module. No gateway routes — the minimal exemplar shape.
+[project.entry-points."navig.plugins"]
+devhost = "navig_devhost.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — mounts `navig devhost`.
+[project.entry-points."navig.commands"]
+devhost = "navig_devhost.commands.devhost:devhost_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_devhost*"]
+
+[tool.setuptools.package-data]
+# "skills/**/*.md" = the agent-discovered capability skill (intent-routes
+# "give my dev server an https domain" → `navig devhost`), shipped in the wheel.
+# The `navig menu` integration is a built-in of navig-menu (not shipped here).
+navig_devhost = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

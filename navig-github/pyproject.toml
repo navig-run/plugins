@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-github"
+version = "0.2.5"
+description = "NAVIG GitHub module — the full GitHub toolbox (backup, mirror, export, manage) wired into `navig github`. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "github", "git", "backup", "mirror"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use. The navig[extra] -> plugin -> navig
+# cycle is fine (verified resolving AND installing under both pip and uv; in this
+# monorepo uv resolves it to the local root project via [tool.uv.sources]).
+# The GitHub engine is bundled
+# in-package (navig_github.engine) and mounted in-process into `navig github`.
+# The bundled GitHub engine's runtime deps (typer/rich/pyyaml come with navig-core).
+dependencies = ["navig>=3.25.0", "requests>=2.31.0", "python-dotenv>=1.0.0", "schedule>=1.2.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot
+# (and by the module registry's CLI-side once-loader); register() adds the free
+# "github" module. No gateway routes — this is the minimal exemplar shape.
+[project.entry-points."navig.plugins"]
+github = "navig_github.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+github = "navig_github.commands.github:github_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_github*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_github = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

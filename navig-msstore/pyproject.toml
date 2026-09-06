@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-msstore"
+version = "0.6.0"
+description = "navig mstore -- Microsoft Store publishing verbs for NAVIG, wrapping the msstore-publish block."
+keywords = ["navig", "cli", "agent", "automation", "plugin", "microsoft-store", "msix", "publishing", "windows"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "navig" }]
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+dependencies = ["navig>=3.25.0", "typer>=0.9"]
+
+# This is the seam: NAVIG's CLI mounts every `navig.commands` entry point as a
+# top-level `navig <name>` verb (cli/registration.py). No core edit needed.
+[project.entry-points."navig.commands"]
+mstore = "navig_msstore:app"
+
+[tool.setuptools]
+packages = ["navig_msstore"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_msstore = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

@@ -1,0 +1,16 @@
+# Build artifacts
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+
+# Dev artifacts
+.dev/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local secrets / fixtures that shouldn't be committed
+*.local.yaml
+photos/

@@ -1,0 +1,1 @@
+"""Email plugin deck routes."""

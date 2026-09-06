@@ -1,0 +1,33 @@
+# ── Secrets — NEVER commit (this is a secrets manager) ───────────────────────
+*.vault
+vault.db
+vault.db-*
+*.salt
+*.key
+*.pem
+.env
+.env.*
+!.env.example
+.dev.vars
+secrets/
+.secrets/
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ── OS / editor junk ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log

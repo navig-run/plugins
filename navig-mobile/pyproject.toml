@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-mobile"
+version = "0.4.2"
+description = "NAVIG Mobile — pro-grade Android + iOS device operations: connect, device info, apps, file pull, screenshots, backups, plus forensics / spyware-scan / root-jailbreak assist / OSINT, and app UI automation (a11y snapshots, tap/fill, `ui assert` machine checks, evidence capture). Wired into `navig mobile` (+ `navig android` / `navig ios`). A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "android", "ios", "mobile", "adb", "device"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Base install has ZERO hard third-party deps — Apache-2.0 clean and light, so
+# `navig help` stays <50 ms. Platform engines load only when a device is touched
+# (lazy imports inside command bodies). Capability comes from the extras below;
+# restrictive/native tools (mvt, frida, objection, iLEAPP/ALEAPP, adb/fastboot/
+# scrcpy binaries) are DETECTED + install-guided by `navig mobile doctor`, never
+# imported/bundled — keeping this package permissively licensed.
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+dependencies = ["navig>=3.25.0"]
+
+[project.optional-dependencies]
+# The two permissively-licensed, pure-Python device engines.
+android = ["adbutils>=2.10.0"]        # MIT — Android over ADB
+ios = ["pymobiledevice3>=9.0.0"]      # iOS over lockdown/usbmux (the "3uTools" engine)
+all = ["navig-mobile[android,ios]"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "mobile" module to the module registry + a deferred
+# gateway route hook.
+[project.entry-points."navig.plugins"]
+mobile = "navig_mobile.plugin"
+
+# Discovered by navig.cli.registration — the CLI seam. One plugin, three verbs:
+# the `navig mobile` umbrella plus `navig android` / `navig ios` convenience
+# aliases (the same sub-Typers also mount under `navig mobile android|ios`).
+[project.entry-points."navig.commands"]
+mobile = "navig_mobile.commands.mobile:mobile_app"
+android = "navig_mobile.commands.mobile:android_app"
+ios = "navig_mobile.commands.mobile:ios_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_mobile*"]
+
+[tool.setuptools.package-data]
+# Ship the bundled capability skill (agent-routable) + the app-ui-verify Block
+# (discoverable via navig.plugins.package.plugin_capability_dirs("blocks")) in the wheel.
+navig_mobile = ["skills/**/*.md", "blocks/**/*.md"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

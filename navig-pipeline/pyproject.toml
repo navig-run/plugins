@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-pipeline"
+version = "0.1.0"
+description = "NAVIG content assembly line — composes navig-download/-audio/-text/-social into one flow (download → transcribe → script → narrate → fan-out). A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "pipeline", "workflow", "orchestration"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Relies on navig-core being installed. The stage plugins (navig-download/-audio/
+# -text/-social) are OPTIONAL and soft-imported at run time — a missing one just
+# drops its stage, so none are declared as hard deps.
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+dependencies = ["navig>=3.25.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot.
+[project.entry-points."navig.plugins"]
+pipeline = "navig_pipeline.plugin"
+
+# `navig pipeline` (run / status). Discovered by
+# navig.cli.registration._entry_point_commands() — no hardcoded map entry needed.
+[project.entry-points."navig.commands"]
+pipeline = "navig_pipeline.commands.pipeline:pipeline_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_pipeline*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

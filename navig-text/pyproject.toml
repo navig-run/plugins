@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-text"
+version = "0.3.0"
+description = "NAVIG Text module — AI text generation (drafts/articles/captions/briefs) + `navig design` (agent HTML/CSS restyle + design tokens) for the Design Mode lens. A first-party navig plugin (free, toggleable). The TEXT facet of the shared media generation engine."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "text", "ai", "generation", "design", "css", "html"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use. The navig[extra] -> plugin -> navig
+# cycle is fine (verified resolving AND installing under both pip and uv; in this
+# monorepo uv resolves it to the local root project via [tool.uv.sources]).
+# Text generation goes through core's
+# navig.agent.ai_client (all inference lives in navig/agent/), so navig is its ONLY
+# dependency — the LLM providers already ship in core.
+dependencies = ["navig>=3.25.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "text" module AND wires the TEXT generation facet.
+[project.entry-points."navig.plugins"]
+text = "navig_text.plugin"
+
+# `navig text` (gen / check) + `navig design` (edit). Discovered by
+# navig.cli.registration._entry_point_commands() — no hardcoded map entry needed.
+# `design` lives here (not a separate plugin) because it is an agent-backed
+# text/markup transform sharing the same core AI client as text generation.
+[project.entry-points."navig.commands"]
+text = "navig_text.commands.text:text_app"
+design = "navig_text.commands.design:design_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_text*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

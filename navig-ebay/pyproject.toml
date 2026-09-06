@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-ebay"
+version = "0.1.0"
+description = "NAVIG eBay module — sell on eBay via the official Sell APIs (draft, publish, price, orders) wired into `navig ebay`. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "ebay", "selling", "marketplace", "listing", "commerce"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use. The navig[extra] -> plugin -> navig
+# cycle is fine (verified resolving AND installing under both pip and uv; in this
+# monorepo uv resolves it to the local root project via [tool.uv.sources]).
+# typer/rich/pyyaml come with navig-core;
+# requests is the plugin's own HTTP client (mirrors navig-github's engine).
+dependencies = ["navig>=3.25.0", "requests>=2.31.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot
+# (and by the module registry's CLI-side once-loader); register() adds the free
+# "ebay" module.
+[project.entry-points."navig.plugins"]
+ebay = "navig_ebay.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam that
+# mounts `navig ebay` as a top-level verb (no core registration edit needed).
+[project.entry-points."navig.commands"]
+ebay = "navig_ebay.commands.ebay:ebay_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_ebay*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_ebay = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"

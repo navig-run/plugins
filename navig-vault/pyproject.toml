@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-vault"
+version = "0.7.0"
+description = "NAVIG Vault — a free, standalone, encrypted developer secrets manager (Doppler / 1Password-CLI / Infisical class). Installs without navig; shares one vault."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "NAVIG Team", email = "opensource@navig.run" }]
+keywords = ["secrets", "vault", "credentials", "secrets-manager", "encryption", "dotenv", "keychain", "navig"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security :: Cryptography",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Utilities",
+]
+
+# `cryptography` is REQUIRED, not optional: the engine imports AESGCM/PBKDF2HMAC at module
+# scope (navig/vault/crypto.py), so shipping it behind an extra would produce an install
+# that imports and then raises. It moved here from the old `crypto` extra for that reason.
+#
+# requires-python is >=3.10, not 3.9: eight signatures across encryption.py / storage.py /
+# types.py use PEP 604 `X | None` WITHOUT `from __future__ import annotations`, and those
+# annotations are evaluated at def time — a hard TypeError at import on 3.9.
+dependencies = ["cryptography>=42.0"]
+
+[project.optional-dependencies]
+# Argon2id is probed LAZILY on purpose (the C extension can block during DLL loading on
+# Windows / 3.14) and there is a working PBKDF2-HMAC-SHA256 @ 600k fallback, so unlike
+# `cryptography` this one is genuinely optional.
+argon2 = ["argon2-cffi>=21.0"]
+keyring = ["keyring>=24.0"]          # OS-keychain unlock (macOS Keychain / Windows Credential Manager / Secret Service)
+validators = ["httpx>=0.27"]         # provider credential health checks (`nv test <provider>`)
+web = ["tldextract>=5.0"]            # registrable-domain matching for website logins
+all = ["argon2-cffi>=21.0", "keyring>=24.0", "httpx>=0.27", "tldextract>=5.0"]
+dev = ["pytest>=7.0", "ruff>=0.4"]
+
+[project.scripts]
+# Withheld in 0.2.0-0.6.x on purpose: the CLI was a placeholder, and installing a global `nv`
+# that printed "not yet implemented" would have claimed a two-letter binary name for something
+# that did nothing. Adding an entry point is additive; un-squatting a name is not. The engine
+# and the commands are real now, so they land together.
+navig-vault = "navig_vault.cli:main"
+nv = "navig_vault.cli:main"
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://github.com/navig-run/core/blob/main/docs/README.md"
+
+# PEP 561: this package is fully annotated, and consumers must be able to see that.
+# Without the marker mypy treats navig_vault as an untyped third-party package and refuses to
+# resolve ANY of its members -- which broke navig's own module-attr guard, because
+# navig/vault/*.py are now shims aliasing to this package and every attribute reached through
+# them read as "module has no attribute" for a call that works perfectly at runtime.
+[tool.setuptools.package-data]
+navig_vault = ["py.typed"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["navig_vault*"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100

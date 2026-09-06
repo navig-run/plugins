@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-dedupe"
+version = "0.1.1"
+description = "NAVIG Dedupe — a free, standalone perceptual duplicate finder for photos, video, audio & any file. Non-destructive (quarantine, never delete). Installs without navig; also wired into `navig dedupe`."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "dedupe", "duplicates", "perceptual-hash", "dhash", "photos", "images", "video", "audio", "cleanup"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Multimedia :: Graphics",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Standalone-first: `pip install navig-dedupe` works on its own. It does NOT
+# declare navig-core as a dep (core installs the plugin, not the reverse). The
+# CLI is plain typer+rich so it never imports navig; the same `dedupe_app` is
+# mounted as `navig dedupe` when navig is present. numpy+Pillow drive the
+# perceptual image/video hashers; audio needs the `fpcalc` binary and video
+# needs `ffmpeg`/`ffprobe` (probed at runtime, not pip deps).
+dependencies = [
+  "numpy>=1.24.0",
+  "Pillow>=10.0.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "ruff>=0.6.0"]
+
+[project.scripts]
+navig-dedupe = "navig_dedupe.cli:main"
+ndup = "navig_dedupe.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "dedupe" module to the catalog.
+[project.entry-points."navig.plugins"]
+dedupe = "navig_dedupe.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — mounts `navig dedupe`.
+[project.entry-points."navig.commands"]
+dedupe = "navig_dedupe.commands.dedupe:dedupe_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_dedupe*"]
+
+[tool.setuptools.package-data]
+# Ship the capability skill (auto-discovered by the agent) in the wheel.
+navig_dedupe = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100

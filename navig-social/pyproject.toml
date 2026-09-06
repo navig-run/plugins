@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-social"
+version = "0.1.2"
+description = "NAVIG Social module — compose, schedule & publish across social networks (Studio + one-call fan-out). A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "social", "publishing", "tiktok", "instagram"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use. The navig[extra] -> plugin -> navig
+# cycle is fine (verified resolving AND installing under both pip and uv; in this
+# monorepo uv resolves it to the local root project via [tool.uv.sources]).
+# The publishing framework
+# (publishers, OAuth connect, dispatcher, Studio scheduler) lives in-package and
+# mounts in-process into `navig social` / `navig facebook` + the Studio deck routes.
+dependencies = ["navig>=3.25.0", "aiohttp>=3.9.0", "requests>=2.25.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() mounts the Studio deck routes via the gateway:register_routes hook
+# and registers the free "social" module in the registry.
+[project.entry-points."navig.plugins"]
+social = "navig_social.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+social = "navig_social.commands.social:social_app"
+facebook = "navig_social.commands.facebook:facebook_app"
+fb = "navig_social.commands.facebook:facebook_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_social*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_social = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
