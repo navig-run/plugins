@@ -1,0 +1,10 @@
+{
+  "name": "override-merge",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "prepare": "husky install",
+    "test": "vitest run"
+  },
+  "dependencies": { "vite": "^5.0.0" }
+}

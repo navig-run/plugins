@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-social"
+version = "0.2.1"
+description = "NAVIG Social module — compose, schedule & publish across social networks (Studio + one-call fan-out). A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "social", "publishing", "tiktok", "instagram"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig. Publishing (X, LinkedIn, Facebook/Instagram, Threads, Pinterest,
+# dev.to, YouTube), OAuth connect, receipts, engagement and stats run on their own: tokens
+# live in the shared vault (navig-vault), non-secret settings in the same config.yaml
+# (navig-sdk). Posting to Telegram/Discord goes through navig's own bot, the Studio deck and
+# its scheduler run in navig's daemon, and browser-backed stats use navig's managed browser —
+# those need navig and say so.
+dependencies = [
+  "navig-sdk>=2.15.0",
+  "navig-vault>=0.7.0",
+  "aiohttp>=3.9.0",
+  "requests>=2.25.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+# Browser-backed stats (consent / login-walled sites) drive a real browser through
+# navig-browser; `--only-public` needs no browser.
+browser = ["navig-browser[drive]>=0.1.0"]
+
+# Its own command: `navig social`'s commands plus the `facebook` Page tools.
+[project.scripts]
+navig-social = "navig_social.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() mounts the Studio deck routes via the gateway:register_routes hook
+# and registers the free "social" module in the registry.
+[project.entry-points."navig.plugins"]
+social = "navig_social.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+social = "navig_social.commands.social:social_app"
+facebook = "navig_social.commands.facebook:facebook_app"
+fb = "navig_social.commands.facebook:facebook_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_social*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_social = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-social`, no navig needed) AND as `navig social` / `navig facebook` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

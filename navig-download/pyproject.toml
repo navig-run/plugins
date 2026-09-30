@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-download"
+version = "0.3.0"
+description = "NAVIG Download module — universal media downloader (yt-dlp): video, audio & files from YouTube, TikTok and any supported site. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "download", "media", "yt-dlp", "video"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use. The navig[extra] -> plugin -> navig
+# cycle is fine (verified resolving AND installing under both pip and uv; in this
+# monorepo uv resolves it to the local root project via [tool.uv.sources]).
+# The yt-dlp download engine is
+# bundled in-package (navig_download.downloader) and wired in-process into
+# `navig download` (aliases `dl`, and `tiktok`/`tt`).
+# curl_cffi gives yt-dlp its `impersonate` backend — a real Chrome TLS/JA3 + HTTP2
+# fingerprint (the single biggest anti-detection win for the TikTok comments path).
+# yt-dlp auto-detects it at runtime; the code degrades gracefully if it's absent.
+# Runs WITHOUT navig: core touches go through navig-sdk (navig's own implementation when
+# navig is installed), so this does not depend on navig; navig installs it, not the reverse.
+# The TikTok browser login/fetch paths drive a real browser through navig-browser (the
+# `tiktok` extra), which also runs without navig.
+dependencies = [
+  "navig-sdk>=2.16.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+  "yt-dlp",
+  "curl_cffi>=0.7.0",
+  "tqdm>=4.0.0",
+  "urllib3>=1.26.0",
+  "requests>=2.25.0",
+]
+
+[project.optional-dependencies]
+# A vaulted TikTok session (saved by `navig tt login`) is reused for gated downloads; the
+# shared encrypted vault is its own package, and navig always has it.
+vault = ["navig-vault>=0.7.0"]
+# TikTok browser login / signed fetch: navig-browser drives Chrome (or Camoufox) with stealth,
+# and keeps the session in the shared vault.
+tiktok = ["navig-browser[drive,stealth]>=0.1.0", "navig-vault>=0.7.0"]
+
+# Its own command: the same app navig mounts as `navig download`.
+[project.scripts]
+navig-download = "navig_download.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() registers the free "download" module in the registry.
+[project.entry-points."navig.plugins"]
+download = "navig_download.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+# `download`/`dl` is the new primary; `tiktok`/`tt` are back-compat aliases (same app).
+[project.entry-points."navig.commands"]
+download = "navig_download.commands.download:download_app"
+dl = "navig_download.commands.download:download_app"
+tiktok = "navig_download.commands.download:tiktok_app"
+tt = "navig_download.commands.download:tt_app"
+
+[tool.pytest.ini_options]
+# Plain `async def test_*` works (no per-test marker needed), matching navig-core.
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["navig_download*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_download = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-download`, no navig needed) AND as `navig download` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

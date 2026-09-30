@@ -1,0 +1,61 @@
+name: CI
+
+# ruff lint + format check + a compile pass, plus the suite. This workflow runs in the
+# generated standalone mirror (Actions is billing-blocked on the monorepo), which is the
+# ONE place navig is genuinely absent — so it is where the _compat fallbacks are exercised
+# for real rather than through a fixture. `tests/` used to run nowhere: the job installed
+# nothing and never invoked pytest, so a suite that exists was documentation.
+on:
+  push:
+    branches: [main]
+    paths: ["**.py", "pyproject.toml"]
+  pull_request:
+    paths: ["**.py", "pyproject.toml"]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install ruff
+        run: pip install --quiet ruff
+      - name: Ruff lint
+        run: ruff check .
+      - name: Ruff format check
+        run: ruff format --check .
+      - name: Compile (syntax) check
+        run: python -m compileall -q navig_vault
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # The floor is 3.10, not 3.9: eight signatures in the engine use PEP 604 `X | None`
+        # without `from __future__ import annotations`, which is a TypeError at import on 3.9.
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install (standalone — navig deliberately absent)
+        run: pip install --quiet -e ".[dev]"
+      - name: Assert navig really is absent
+        # If navig leaked into this environment the _compat fallbacks would silently take
+        # the delegate branch and this job would prove nothing.
+        run: python -c "import importlib.util,sys; sys.exit(1 if importlib.util.find_spec('navig') else 0)"
+      - name: pytest
+        run: pytest -q

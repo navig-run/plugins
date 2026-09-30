@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-antivirus"
+version = "0.2.0"
+description = "NAVIG Antivirus module — browser-extension malware/PUP scanning, Chrome extension-registry auditing, Chrome profile-index recovery, and a system malware scan (Windows Defender; Malwarebytes best-effort). Wired into `navig antivirus`. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "antivirus", "security", "malware", "scan"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Relies on navig-core being installed in the same environment (typer/rich/pyyaml
+# come with navig-core). Pure-stdlib engine: json, pathlib, subprocess, winreg
+# (Windows-only paths are import-guarded), so no third-party runtime deps.
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+# Runs WITHOUT navig: core touches go through navig-sdk (navig's own implementation when
+# navig is installed), so this does not depend on navig; navig installs it, not the reverse.
+dependencies = ["navig-sdk>=2.7.0", "typer>=0.14.0", "rich>=13.7.0"]
+
+# Its own command: the same app navig mounts as `navig antivirus`.
+[project.scripts]
+navig-antivirus = "navig_antivirus.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "antivirus" module to the module registry.
+[project.entry-points."navig.plugins"]
+antivirus = "navig_antivirus.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+# Registers the top-level `navig antivirus` command.
+[project.entry-points."navig.commands"]
+antivirus = "navig_antivirus.commands.antivirus:antivirus_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_antivirus*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-antivirus`, no navig needed) AND as `navig antivirus` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

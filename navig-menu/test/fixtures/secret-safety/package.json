@@ -1,0 +1,6 @@
+{
+  "name": "secret-safety",
+  "description": "Fixture asserting .env values never leak into the manifest",
+  "scripts": { "dev": "node app.js" },
+  "dependencies": { "stripe": "^16.0.0" }
+}

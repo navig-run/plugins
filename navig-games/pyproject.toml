@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-games"
+version = "0.11.0"
+description = "NAVIG Games — proactively find & auto-claim FREE games (Epic now; GOG/Amazon/Steam next) and manage your game library. A first-party navig plugin (free, toggleable). FREE-ONLY: never spends real money."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "games", "epic", "steam", "free-games"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig. Finding free games (Epic, GOG, itch, Steam, giveaways), the Steam
+# library tools (library / unify / art / shortcuts), deals, Steam Guard codes, history and
+# doctor run on their own: settings in the same config.yaml (navig-sdk), Steam Guard secrets in
+# the shared vault (navig-vault). Epic sign-in and auto-claim drive a real browser through
+# navig-browser, sessions in the same vault. Only `schedule` (navig's daemon) needs navig.
+dependencies = [
+  "navig-sdk>=2.15.0",
+  "navig-vault>=0.7.0",
+  "navig-browser[drive]>=0.1.0",
+  "requests>=2.31.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+]
+
+# Its own command: the same commands navig mounts on `navig games`.
+[project.scripts]
+navig-games = "navig_games.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "games" module + agent tools.
+[project.entry-points."navig.plugins"]
+games = "navig_games.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+games = "navig_games.commands.games:games_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_games*"]
+
+[tool.setuptools.package-data]
+# Ship the bundled intent-routing skill in the wheel.
+navig_games = ["skills/**/*.md"]
+
+[tool.ruff]
+line-length = 100
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-games`, no navig needed) AND as `navig games` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

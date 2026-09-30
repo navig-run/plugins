@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-browser"
+version = "0.1.0"
+description = "Launch an isolated Chrome/Edge/Brave or Electron app, drive it over CDP, keep named profiles and stop only what it launched — the browser engine navig uses; runs on its own as `navig-browser`."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "browser", "cdp", "chrome", "playwright"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP :: Browsers",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig. navig's browser engine lives HERE (navig.browser.<module> is an identity
+# alias of this package's modules) and navig hard-depends on this package, so keep it light:
+# launching, profiles, launch records and teardown need only the stdlib + psutil. Driving a
+# page goes through Playwright's CDP client (the `drive` extra); stealth Chromium and Camoufox
+# are extras too. Logins and sessions come from the shared vault (navig-vault); `record`'s
+# mp4 encode is navig-generate's. Cortex (`navig cortex`, the AI page-driving loop) uses
+# navig's AI and needs navig.
+dependencies = [
+  "navig-sdk>=2.15.0",
+  "navig-vault>=0.7.0",
+  "navig-generate>=0.2.1",
+  "psutil>=5.9.0",
+  "aiohttp>=3.9.0,<3.13.0; python_version >= '3.14'",
+  "aiohttp>=3.9.0; python_version < '3.14'",
+  "tldextract>=5.0.0",
+  "pyyaml>=6.0",
+  "loguru>=0.7.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+# Drive a page (nav / eval / click / snapshot / screenshot / login …) over Playwright's CDP
+# client. Launching and stopping a browser do not need it.
+drive = ["playwright>=1.40"]
+# Stealth Chromium: `patchright install chromium` (or use channel=chrome).
+stealth = ["patchright>=1.40", "browserforge>=1.2.0"]
+# Camoufox, a C++-stealth Firefox; fetches its binary on first use (`python -m camoufox fetch`).
+firefox = ["camoufox[geoip]>=0.4"]
+
+# Its own command: the same commands navig mounts on `navig cdp`.
+[project.scripts]
+navig-browser = "navig_browser.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["navig_browser*"]
+
+[tool.setuptools.package-data]
+navig_browser = ["templates/*.yaml"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-browser`, no navig needed) AND as `navig cdp` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

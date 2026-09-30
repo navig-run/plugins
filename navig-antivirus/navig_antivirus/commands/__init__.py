@@ -1,0 +1,1 @@
+"""navig-antivirus CLI commands."""

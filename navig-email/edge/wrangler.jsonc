@@ -1,0 +1,26 @@
+{
+  // cybesis-mailroom — the edge half of the navig mailroom (see src/index.js).
+  // Deploy: `navig email edge deploy` (or `npx wrangler deploy` here).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cybesis-mailroom",
+  "main": "src/index.js",
+  "compatibility_date": "2025-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    "DOMAIN": "cybesis.com",
+    "FORWARD_TO": "cybesis@gmail.com",
+    "DEFAULT_FROM": "support@cybesis.com",
+    "DEFAULT_FROM_NAME": "Cybesis Studios",
+    // Aliases that ping Telegram; every routed alias is forwarded + recorded regardless.
+    // THIS IS A FALLBACK: `navig email edge deploy --space <s>` overrides it from the
+    // space's mailroom/accounts.yaml (`aliases[].notify`) so the list has one owner.
+    "NOTIFY_ALIASES": "support,billing,security,legal,privacy,abuse,partnerships,hello,contact,info,press"
+  },
+  // Secrets (wrangler secret put): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, EDGE_TOKEN,
+  // EDGE_READ_TOKEN (optional: read-only scope for /stats and /events)
+  "d1_databases": [
+    { "binding": "DB", "database_name": "cybesis-mailroom", "database_id": "eec4c8e0-de83-4b08-9526-8d921c0a1d2e", "migrations_dir": "migrations" }
+  ],
+  "send_email": [{ "name": "EMAIL" }]
+}

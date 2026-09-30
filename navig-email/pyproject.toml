@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-email"
+version = "0.3.0"
+description = "Gmail mailroom: rules, watch, labels, stats, digests, drafts — its own navig-email command (Gmail app password over IMAP), and `navig email` inside navig."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "email", "imap", "smtp", "inbox"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Relies on navig-core in the same env (uses navig.connectors for Gmail auth,
+# navig.notify for delivery, navig.llm for briefings). No hard third-party deps.
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+# Runs WITHOUT navig: Gmail through its own IMAP backend (an app password, kept in the
+# shared encrypted vault via navig-vault); navig's OAuth connector is used instead when navig
+# is installed and Gmail is linked there. AI summaries go through navig's privacy guard and
+# stay navig-only; Telegram alerts need navig's bot. navig installs this, not the reverse.
+dependencies = [
+  "navig-sdk>=2.11.0",
+  "navig-vault>=0.7.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+  "pyyaml>=6.0",
+]
+
+# Its own command: the same app navig mounts as `navig email`.
+[project.scripts]
+navig-email = "navig_email.cli:main"
+
+# register() mounts the Email deck routes via gateway:register_routes + registers
+# the free "email" module in the registry (discovered by load_entry_point_plugins).
+[project.entry-points."navig.plugins"]
+email = "navig_email.plugin"
+
+# The `navig email` CLI, discovered by the navig.commands seam.
+[project.entry-points."navig.commands"]
+email = "navig_email.commands.email:email_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_email*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_email = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-email`, no navig needed) AND as `navig email` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

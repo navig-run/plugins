@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-audio"
+version = "0.3.0"
+description = "Speak text, transcribe audio, generate music and sound effects, analyse beats and render podcasts — its own navig-audio command, with your own provider keys; also `navig audio` / `navig voice` inside navig."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "audio", "tts", "stt", "voice", "transcription"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig. Voice engines (edge-tts, Whisper, OpenAI/Deepgram STT) live here; the
+# media engine (audio edit, beats, tonality, the ElevenLabs client) comes from navig-generate,
+# which navig itself depends on. Keys come from env vars or the shared vault (navig-vault);
+# podcast drafting and translation use navig-sdk's AI (navig's router inside navig, the
+# user's own key or Ollama on its own). The wake-word voice pipeline needs navig's gateway.
+dependencies = [
+  "navig-sdk>=2.14.0",
+  "navig-generate>=0.2.1",
+  "navig-vault>=0.7.0",
+  "edge-tts>=6.1.9",
+  "openai>=1.0.0",
+  "faster-whisper>=1.0.0",
+  "httpx>=0.24.0",
+  "aiohttp>=3.9",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+]
+
+# Its own command: `navig audio`'s commands plus `voice` (speak / transcribe / list-voices).
+[project.scripts]
+navig-audio = "navig_audio.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "audio" module AND wires the AUDIO generation facet.
+[project.entry-points."navig.plugins"]
+audio = "navig_audio.plugin"
+
+# `navig audio` (gen / check / edit / beat / podcast). Discovered by
+# navig.cli.registration._entry_point_commands() (no hardcoded map entry needed).
+# `navig voice` is core's verb; it mounts navig_audio.commands.voice.
+[project.entry-points."navig.commands"]
+audio = "navig_audio.commands.audio:audio_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_audio*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_audio = ["skills/**/*.md", "beats/*.yaml"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-audio`, no navig needed) AND as `navig audio` / `navig voice` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

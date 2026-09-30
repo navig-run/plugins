@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-github"
+version = "0.3.0"
+description = "The full GitHub toolbox (backup, mirror, export, manage): its own navig-github command, and `navig github` inside navig."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "github", "git", "backup", "mirror"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig: every core touch goes through navig-sdk (navig's own implementation
+# when navig is installed, a faithful standalone copy when not), so this does NOT depend on
+# navig. navig installs it (`navig[github]`), not the reverse. The bundled GitHub engine
+# (navig_github.engine) needs typer, rich and pyyaml, which used to arrive with navig.
+dependencies = [
+  "navig-sdk>=2.7.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+  "pyyaml>=6.0",
+  "requests>=2.31.0",
+  "python-dotenv>=1.0.0",
+  "schedule>=1.2.0",
+]
+
+[project.optional-dependencies]
+# Keep the GitHub token in the shared, encrypted navig vault (`navig-github token set`).
+# navig itself always has it; standalone, without this the token lives in
+# ~/.navig/config.yaml or the GITHUB_TOKEN env var.
+vault = ["navig-vault>=0.7.0"]
+
+# Its own command: the same app navig mounts as `navig github`.
+[project.scripts]
+navig-github = "navig_github.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot
+# (and by the module registry's CLI-side once-loader); register() adds the free
+# "github" module. No gateway routes — this is the minimal exemplar shape.
+[project.entry-points."navig.plugins"]
+github = "navig_github.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+github = "navig_github.commands.github:github_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_github*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_github = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-github`, no navig needed) AND as `navig github` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

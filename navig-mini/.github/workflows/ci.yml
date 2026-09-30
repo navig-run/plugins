@@ -1,0 +1,30 @@
+name: CI
+
+# Lean syntax gate: compile the package + entrypoints. No deps, path-filtered to
+# Python, cancel-in-progress — fast and cheap. (Ruff config is present; flip to a
+# blocking `ruff check` here once the existing lint debt is cleared.)
+on:
+  push:
+    branches: [main]
+    paths: ["**.py"]
+  pull_request:
+    paths: ["**.py"]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Compile (syntax) check
+        run: python -m compileall -q navig_mini agent.py monitor.py install.py

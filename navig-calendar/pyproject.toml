@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-calendar"
+version = "0.2.0"
+description = "NAVIG Calendar module — list/add/sync events (Google Calendar, CalDAV, ICS). A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "calendar", "events", "google-calendar", "caldav", "ics"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# No hard deps: relies on navig-core (the calendar PROVIDERS stay in core's
+# navig.agent.proactive — shared with the proactive assistant; the CLI moved out).
+# Declares navig: this plugin's code imports navig.* directly, so a bare
+# `pip install navig-<name>` must bring core in — otherwise it installs cleanly and
+# then raises ModuleNotFoundError on first use.
+# Runs WITHOUT navig: the ICS/CalDAV providers live in this package (core's
+# navig.agent.proactive.ics_calendar aliases navig_calendar.ics), feeds are fetched through
+# navig-sdk's SSRF guard, and config is read from the same config.yaml navig uses.
+# icalendar was declared NOWHERE before this (neither here nor in core), so ICS only worked
+# where someone had installed it by hand. Google Calendar rides navig's OAuth connectors and
+# stays navig-only; Google's private ICS address works on its own with `list --ics`.
+dependencies = ["navig-sdk>=2.11.0", "typer>=0.14.0", "rich>=13.7.0", "httpx>=0.24", "icalendar>=5.0", "pyyaml>=6.0"]
+
+[project.optional-dependencies]
+# Writing events (`add`) and reading a CalDAV server.
+caldav = ["caldav>=1.3"]
+
+# Its own command: the same app navig mounts as `navig calendar`.
+[project.scripts]
+navig-calendar = "navig_calendar.cli:main"
+
+[project.entry-points."navig.plugins"]
+calendar = "navig_calendar.plugin"
+
+[project.entry-points."navig.commands"]
+calendar = "navig_calendar.commands.calendar:calendar_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_calendar*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_calendar = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-calendar`, no navig needed) AND as `navig calendar` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

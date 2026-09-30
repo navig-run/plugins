@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-cabinet"
+version = "0.3.0"
+description = "NAVIG Cabinet — your documents in one plugin: an encrypted cabinet for important files (ID and passport scans, medical records, contracts, photos, recordings — any type, any size; local-OCR search, expiry reminders, portable backups) plus `navig paperwork`, which files business paperwork (invoices, quotes, contracts, tax) into a space. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "plugin", "documents", "encryption", "vault", "ocr", "backup", "personal", "paperwork", "invoice", "facture", "accounting"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: End Users/Desktop",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Office/Business :: Financial :: Accounting",
+  "Topic :: Security :: Cryptography",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# navig: the CLI seam, console helpers and navig.inbox.extract (local OCR / PDF text).
+# navig-vault: the machine identity the default (passphrase-less) key binds to.
+# cryptography: AES-256-GCM streams and scrypt — the ONLY dependency the standalone
+# recovery script (navig_cabinet/recover_backup.py) needs.
+# python-docx: `navig paperwork` corpora keep briefs and contracts as .docx; without it
+# those degrade to filename-only classification with no visible error, and
+# navig.inbox.extract imports it lazily, so it must come from here.
+# Runs WITHOUT navig: core touches go through navig-sdk, and the encryption key lives in
+# the shared vault through the standalone navig-vault package. Without navig, text files
+# and Word documents are still read for search; PDFs, OCR and recordings use navig's
+# extractor. navig installs this plugin, not the reverse.
+dependencies = [
+  "navig-sdk>=2.10.0",
+  "navig-vault>=0.7.0",
+  "cryptography>=42.0",
+  "python-docx>=1.1",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+  "pyyaml>=6.0",
+]
+
+# Its own command: `navig cabinet` and `navig paperwork` in one (`navig-cabinet paperwork …`).
+[project.scripts]
+navig-cabinet = "navig_cabinet.cli:main"
+
+# Local OCR for scans. Tesseract itself is an OS-level install pip cannot provide;
+# without it, scans are still stored — just searchable by title and tags only.
+[project.optional-dependencies]
+ocr = ["pytesseract>=0.3.10", "Pillow>=9"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot.
+[project.entry-points."navig.plugins"]
+cabinet = "navig_cabinet.plugin"
+paperwork = "navig_cabinet.paperwork.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+cabinet = "navig_cabinet.commands.cabinet:cabinet_app"
+paperwork = "navig_cabinet.paperwork.commands.paperwork:paperwork_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_cabinet*"]
+
+[tool.setuptools.package-data]
+navig_cabinet = ["skills/**/*.md", "py.typed", "paperwork/py.typed"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-cabinet`, no navig needed) AND as `navig cabinet` / `navig paperwork` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

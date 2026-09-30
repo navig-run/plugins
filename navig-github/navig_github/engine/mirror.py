@@ -1,0 +1,325 @@
+"""
+Repository mirroring orchestration with parallel execution.
+
+"""
+
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+
+from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.table import Table
+
+from .git_utils import GitOperations
+from .github_api import GitHubAPIError, GitHubAPIClient
+from .models import Config, MirrorResult, MirrorSummary, Repository
+from .rich_utils import (
+    Colors,
+    console,
+    format_action,
+    format_repo_name,
+)
+
+
+class MirrorOrchestrator:
+    """
+    Orchestrates repository mirroring operations.
+
+    """
+
+    def __init__(self, config: Config) -> None:
+        """Initialize the mirror orchestrator."""
+        self.config = config
+        self.git_ops = GitOperations()
+
+    def run(self, repos: list[Repository] | None = None) -> MirrorSummary:
+        """
+        Run the mirror operation.
+
+
+        Args:
+            repos: Optional list of repositories to mirror. If None, fetches from GitHub API.
+        """
+        summary = MirrorSummary()
+        start_time = time.monotonic()
+
+        try:
+            # Fetch repositories from GitHub if not provided
+            if repos is None:
+                console.print(
+                    f"\n[cyan]Discovering repositories for {self.config.target_type.value} "
+                    f"'{self.config.target_name}'...[/cyan]"
+                )
+
+                if not self.config.token:
+                    console.print(
+                        "[yellow]⚠ No GITHUB_TOKEN found; only public repositories "
+                        "will be mirrored.[/yellow]"
+                    )
+
+                with GitHubAPIClient(self.config) as api_client:
+                    repos = api_client.get_repositories()
+
+            if not repos:
+                console.print(
+                    "[yellow]No repositories found matching the specified filters.[/yellow]"
+                )
+                return summary
+
+            console.print(f"[green]✓ Found {len(repos)} repositories[/green]\n")
+
+            # Process repositories
+            if self.config.dry_run:
+                console.print(
+                    "[yellow]DRY RUN MODE - No actual operations will be performed[/yellow]\n"
+                )
+                self._dry_run_repos(repos, summary)
+            else:
+                self._mirror_repos(repos, summary)
+
+            # Print summary
+            self._print_summary(summary)
+
+            # Record this run so `navig github analytics` / `analytics-history` have data
+            # (a real run, never a dry run — which touches no disk).
+            if not self.config.dry_run:
+                self._record_history(summary, time.monotonic() - start_time)
+
+        except GitHubAPIError as e:
+            console.print(f"[red]✗ GitHub API Error: {e}[/red]")
+            summary.errors.append(str(e))
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Operation cancelled by user[/yellow]")
+        except Exception as e:
+            console.print(f"[red]✗ Unexpected error: {e}[/red]")
+            summary.errors.append(str(e))
+
+        return summary
+
+    def _record_history(self, summary: MirrorSummary, duration_seconds: float) -> None:
+        """Append this run to the backup-history store the analytics commands read.
+
+        The history file lives at ``<dest>/.navig-github-history.json`` — exactly where
+        ``navig github analytics [path]`` and ``analytics-history [path]`` look — so recording
+        here is what makes those (previously always-empty) surfaces show real data.
+
+        Best-effort by design: analytics is a side concern and must NEVER break or slow a
+        backup, so every failure here is swallowed. (The store itself is transient-lock-safe —
+        it refuses to overwrite an unreadable history rather than wiping it.)
+        """
+        try:
+            from .analytics import BackupAnalytics
+
+            analytics = BackupAnalytics(self.config.dest)
+            analytics.record_backup(
+                repos_cloned=summary.cloned,
+                repos_updated=summary.updated,
+                repos_failed=summary.failed,
+                duration_seconds=round(duration_seconds, 2),
+                error_message="; ".join(summary.errors[:5]) if summary.errors else None,
+            )
+        except Exception:  # noqa: BLE001 — never let history recording break a backup
+            pass
+
+    def _dry_run_repos(self, repos: list[Repository], summary: MirrorSummary) -> None:
+        """Perform a dry run (just print what would be done)."""
+        for repo in repos:
+            # Use categorized path
+            dest_path = self.config.dest / self.config.get_repo_category_path(repo)
+
+            if dest_path.exists() and self.git_ops.is_git_repository(dest_path):
+                action = "UPDATE"
+                console.print(f"[blue]{action:8}[/blue] {repo.full_name}")
+            else:
+                action = "CLONE"
+                console.print(f"[green]{action:8}[/green] {repo.full_name} -> {dest_path}")
+
+            # Count as skipped in dry run
+            result = MirrorResult(repo=repo, success=True, action="skipped", message="Dry run")
+            summary.add_result(result)
+
+    def _mirror_repos(self, repos: list[Repository], summary: MirrorSummary) -> None:
+        """
+        Mirror repositories with parallel execution.
+
+        """
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task("Mirroring repositories...", total=len(repos))
+
+            with ThreadPoolExecutor(max_workers=self.config.max_workers) as executor:
+                # Submit all tasks
+                future_to_repo = {
+                    executor.submit(self._mirror_single_repo, repo): repo for repo in repos
+                }
+
+                # Process completed tasks
+                for future in as_completed(future_to_repo):
+                    result = future.result()
+                    summary.add_result(result)
+                    self._print_result(result)
+                    progress.advance(task)
+
+    def _mirror_single_repo(self, repo: Repository) -> MirrorResult:
+        """
+        Mirror a single repository.
+
+        """
+        # Use categorized path
+        dest_path = self.config.dest / self.config.get_repo_category_path(repo)
+
+        try:
+            # Check if repo already exists
+            if dest_path.exists():
+                if not self.git_ops.is_git_repository(dest_path):
+                    return MirrorResult(
+                        repo=repo,
+                        success=False,
+                        action="failed",
+                        error=f"Path exists but is not a git repository: {dest_path}",
+                    )
+
+                # Skip existing repos if --skip-existing is set
+                if self.config.skip_existing:
+                    return MirrorResult(
+                        repo=repo,
+                        success=True,
+                        action="skipped",
+                        message="Already exists (--skip-existing)",
+                    )
+
+                # Verify remote URL matches
+                remote_url = self.git_ops.get_remote_url(dest_path)
+                expected_urls = [repo.ssh_url, repo.clone_url]
+
+                if remote_url and not any(
+                    remote_url.rstrip("/") == url.rstrip("/") for url in expected_urls
+                ):
+                    return MirrorResult(
+                        repo=repo,
+                        success=False,
+                        action="skipped",
+                        message=f"Remote URL mismatch (expected one of {expected_urls}, got {remote_url})",
+                    )
+
+                # Update existing repo
+                success, message = self.git_ops.update(
+                    repo, dest_path,
+                    lfs=self.config.lfs,
+                    bare=self.config.bare,
+                    force=self.config.force,
+                    ff_only=self.config.ff_only,
+                )
+                action = "updated" if success else "failed"
+                return MirrorResult(
+                    repo=repo,
+                    success=success,
+                    action=action,
+                    message=message,
+                    error=None if success else message,
+                )
+            else:
+                # Clone new repo
+                success, message = self._clone_with_fallback(repo, dest_path)
+                action = "cloned" if success else "failed"
+                return MirrorResult(
+                    repo=repo,
+                    success=success,
+                    action=action,
+                    message=message,
+                    error=None if success else message,
+                )
+
+        except Exception as e:
+            return MirrorResult(repo=repo, success=False, action="failed", error=str(e))
+
+    def _clone_with_fallback(self, repo: Repository, dest_path: Path) -> tuple[bool, str]:
+        """
+        Clone with SSH, fallback to HTTPS if SSH fails.
+
+        """
+        # Try SSH first if configured
+        if self.config.use_ssh:
+            success, message = self.git_ops.clone(
+                repo, dest_path,
+                use_ssh=True,
+                bare=self.config.bare,
+                lfs=self.config.lfs,
+                github_url=self.config.get_github_url(),
+            )
+            if success:
+                return True, message
+
+            # If SSH failed due to auth, try HTTPS
+            if "SSH authentication failed" in message and self.config.token:
+                success, message = self.git_ops.clone(
+                    repo, dest_path,
+                    use_ssh=False,
+                    bare=self.config.bare,
+                    lfs=self.config.lfs,
+                    github_url=self.config.get_github_url(),
+                )
+                if success:
+                    return True, f"{message} (via HTTPS)"
+                return False, message
+            return False, message
+        else:
+            # Use HTTPS directly
+            return self.git_ops.clone(
+                repo, dest_path,
+                use_ssh=False,
+                bare=self.config.bare,
+                lfs=self.config.lfs,
+                github_url=self.config.get_github_url(),
+            )
+
+    def _print_result(self, result: MirrorResult) -> None:
+        """Print the result of a mirror operation."""
+        repo_name = format_repo_name(result.repo.full_name)
+
+        if result.success:
+            if result.action == "cloned":
+                dest_path = self.config.dest / self.config.get_repo_category_path(result.repo)
+                console.print(
+                    f"{format_action('CLONE', Colors.SUCCESS)} {repo_name} [dim]→ {dest_path}[/dim]"
+                )
+            elif result.action == "updated":
+                console.print(f"{format_action('UPDATE', Colors.INFO)} {repo_name}")
+            elif result.action == "skipped":
+                console.print(
+                    f"{format_action('SKIP', Colors.WARNING)} {repo_name} [dim]({result.message})[/dim]"
+                )
+        else:
+            console.print(f"{format_action('FAIL', Colors.ERROR)} {repo_name} [red]{result.error}[/red]")
+
+    def _print_summary(self, summary: MirrorSummary) -> None:
+        """
+        Print operation summary.
+
+        """
+        # Create summary table
+        table = Table(title="📊 Mirror Operation Summary", border_style="cyan", show_header=True)
+        table.add_column("Metric", style="bold", no_wrap=True)
+        table.add_column("Count", justify="right", style="cyan")
+        table.add_column("Status", justify="center")
+
+        # Add rows with color-coded status
+        table.add_row("Total Repositories", str(summary.total), "")
+        table.add_row("Cloned", str(summary.cloned), "[green]✓[/green]")
+        table.add_row("Updated", str(summary.updated), "[blue]✓[/blue]")
+        table.add_row("Skipped", str(summary.skipped), "[yellow]⊘[/yellow]")
+        table.add_row("Failed", str(summary.failed), "[red]✗[/red]")
+
+        console.print()
+        console.print(table)
+
+        # Show errors if any
+        if summary.errors:
+            console.print("\n[bold red]Errors:[/bold red]")
+            for error in summary.errors:
+                console.print(f"  [red]•[/red] {error}")
+
+        console.print()
