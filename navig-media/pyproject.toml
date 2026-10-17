@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-media"
+version = "0.2.0"
+description = "The NAVIG media suite in one install: image and video generation, voice and music, writing, and the assembly line that downloads, transcribes, scripts, narrates and publishes."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "media", "suite", "bundle", "video", "audio", "image", "generation", "publishing"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Multimedia",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# A metapackage: it is only a dependency list plus `navig-media` (which reports what the
+# suite contains). Every component runs on its own — standalone-first holds for the bundle
+# exactly as it does for each part.
+dependencies = [
+  "navig-generate>=0.4.0",
+  "navig-audio>=0.5.1",
+  "navig-text>=0.5.1",
+  "navig-video>=0.3.0",
+  "navig-pipeline>=0.7.0",
+  "navig-download>=0.3.0",
+  "navig-social>=0.2.1",
+  "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+# Filming a live URL in a clip or reel drives a real browser (playwright is heavy, so it
+# stays out of the default install) — same split as navig-pipeline's `film` extra.
+film = ["navig-browser[drive]>=0.1.0"]
+
+[project.scripts]
+navig-media = "navig_media.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["navig_media*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-media`, no navig needed) AND the components register their own
+# `navig <verb>` commands when navig is present. Checked by scripts/check_plugins_publishable.py.
+mode = "standalone"

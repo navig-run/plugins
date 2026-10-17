@@ -1,0 +1,26 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/phone-call
+name: Phone Call
+tool: audio.enhance
+layer: config
+category: Restoration — old media
+description: 'Recorded calls: line noise and hum reduced, levels evened between speakers,
+  low rumble cut. A call stays narrow-band — nothing above ~4 kHz is invented.'
+tags:
+- enhance
+- restoration
+- speech
+params:
+  mode: studio
+  category: speech
+  denoise: auto
+  dehum: auto
+  declick: true
+  highpass_hz: 120
+  eq: gentle
+  compress: moderate
+  target_lufs: -18
+  true_peak_db: -1
+  trim_silence: true

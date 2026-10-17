@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-media-core"
+version = "0.2.0"
+description = "The shared media engine NAVIG's media packages run on — media types and the generator registry, the generation service, the refs library, the variant store, the provider key catalog, and the ffmpeg primitives (audio edit, video edit, frames, fx). A library: no commands of its own, runs without navig."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "media", "ffmpeg", "generation"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig. The shared media FOUNDATION every media package (generate, audio,
+# video, text, pipeline) builds on: asset types + generator registry, refs library, variant
+# store, provider catalog + key resolution, ffmpeg primitives. navig's `navig.media.*` /
+# `navig.store.generated_media` / `navig.tools.media_providers` shims are identity aliases
+# of this package, so navig hard-depends on it.
+#
+# It never imports a sibling media plugin (ADR-0002; tests/test_layering.py). Generation
+# orchestration and the provider clients are navig-generate's, which depends on THIS
+# package. The one exception is the deprecated `media/generation_service.py` alias.
+# ffmpeg is a subprocess; numpy/Pillow extras live with the modules that need them.
+dependencies = ["navig-sdk>=2.13.0"]
+
+[tool.setuptools.packages.find]
+include = ["navig_media_core*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# A shared engine library: no CLI of its own and no `navig` dependency (navig hard-depends
+# on it, so declaring navig back would be a dependency cycle). Checked against the package
+# by scripts/check_plugins_publishable.py.
+mode = "library"

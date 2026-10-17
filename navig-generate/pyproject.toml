@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-generate"
+version = "0.4.1"
+description = "Generate images, video and audio with your own provider keys, keep the variants you like, and edit them: cut, fx, beats, tonality, sprites. Runs on its own as `navig-generate`; the shared media engine lives in `navig-media-core`."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "ai", "image", "generation"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig. The generator clients and the modules that stay here
+# (navig.media.{beats,tonality,processing} and navig.tools.{image,video,audio}_generation
+# are identity aliases of this package's modules), and navig hard-depends on this package,
+# so keep it light: ffmpeg is a subprocess, numpy/Pillow are extras loaded lazily. Keys come
+# from env vars or the shared vault (navig-vault). The deck routes need navig's gateway
+# (aiohttp, which navig has).
+# This package OWNS generation (ADR-0002): the generation service
+# (navig_generate.media.generation_service) and the provider clients it drives. The shared
+# foundation (types, refs library, variant store, provider catalog, ffmpeg primitives) is
+# navig-media-core, which this package depends on and which never imports it back.
+dependencies = [
+  "navig-sdk>=2.13.0",
+  "navig-vault>=0.7.0",
+  "navig-media-core>=0.2.0",
+  "httpx>=0.24",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# Local pixel pipeline (`process`, `palette`, `contact-sheet`).
+process = ["Pillow>=10.0"]
+# Beat and tonality detection.
+beats = ["numpy>=1.24"]
+
+# Its own command: the same commands navig mounts on `navig generate`.
+[project.scripts]
+navig-generate = "navig_generate.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() mounts the generation deck routes via the gateway:register_routes hook
+# and registers the free "generate" module. `navig generate` stays core's verb (it also
+# holds the analyse/briefing commands); core mounts this package's generate commands on it.
+[project.entry-points."navig.plugins"]
+generate = "navig_generate.plugin"
+
+[tool.setuptools.packages.find]
+include = ["navig_generate*"]
+
+[tool.setuptools.package-data]
+# Ship bundled capability skills (auto-discovered by the agent) in the wheel.
+navig_generate = ["skills/**/*.md", "styles.json"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-generate`, no navig needed) AND as `navig generate` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

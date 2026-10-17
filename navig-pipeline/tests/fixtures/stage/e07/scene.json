@@ -1,0 +1,209 @@
+{
+  "title": "My AI tried to delete production",
+  "episode": "S01·E07",
+  "segments": [
+    {
+      "type": "hook",
+      "title": "My AI agent tried to *rm -rf prod*",
+      "sub": "Two guards. **Zero damage.**",
+      "art": "kraken"
+    },
+    {
+      "type": "terminal",
+      "cast": "1-lock.cast",
+      "command": "NAVIG_SESSION_ID=agent-b navig run 'systemctl restart nginx'",
+      "title": "~ agent B, same host",
+      "step": "1/2",
+      "caption": "Another session already holds *prod*",
+      "pace": 6,
+      "hold": 2.4,
+      "dwell": 1.0,
+      "highlight": [
+        "Refusing to operate"
+      ],
+      "speech": {
+        "cues": [
+          [
+            "Mine tried to restart nginx on production,",
+            0.301,
+            3.421
+          ],
+          [
+            "while another agent was already on that host.",
+            3.541,
+            6.301
+          ]
+        ],
+        "words": [
+          [
+            "Mine",
+            0.301,
+            0.621
+          ],
+          [
+            "tried",
+            0.701,
+            0.861
+          ],
+          [
+            "to",
+            0.941,
+            1.021
+          ],
+          [
+            "restart",
+            1.101,
+            1.581
+          ],
+          [
+            "nginx",
+            1.661,
+            2.221
+          ],
+          [
+            "on",
+            2.301,
+            2.381
+          ],
+          [
+            "production,",
+            2.701,
+            3.421
+          ],
+          [
+            "while",
+            3.541,
+            3.661
+          ],
+          [
+            "another",
+            3.861,
+            4.061
+          ],
+          [
+            "agent",
+            4.141,
+            4.461
+          ],
+          [
+            "was",
+            4.581,
+            4.701
+          ],
+          [
+            "already",
+            4.941,
+            5.181
+          ],
+          [
+            "on",
+            5.261,
+            5.341
+          ],
+          [
+            "that",
+            5.421,
+            5.501
+          ],
+          [
+            "host.",
+            5.581,
+            6.301
+          ]
+        ]
+      }
+    },
+    {
+      "type": "terminal",
+      "cast": "2-rm.cast",
+      "command": "navig run 'rm -rf /var/www'",
+      "title": "~ prod-01",
+      "step": "2/2",
+      "caption": "Destructive? A *human* decides.",
+      "pace": 5,
+      "hold": 2.6,
+      "dwell": 1.0,
+      "highlight": [
+        "DESTRUCTIVE",
+        "Aborted."
+      ],
+      "speech": {
+        "cues": [
+          [
+            "Then it asked to delete production files.",
+            0.724,
+            4.004
+          ],
+          [
+            "Fortunately. Mine has boundaries.",
+            5.326,
+            8.046
+          ]
+        ],
+        "words": [
+          [
+            "Then",
+            0.724,
+            1.124
+          ],
+          [
+            "it",
+            1.364,
+            1.524
+          ],
+          [
+            "asked",
+            1.644,
+            1.924
+          ],
+          [
+            "to",
+            2.004,
+            2.084
+          ],
+          [
+            "delete",
+            2.164,
+            2.484
+          ],
+          [
+            "production",
+            2.764,
+            3.044
+          ],
+          [
+            "files.",
+            3.204,
+            4.004
+          ],
+          [
+            "Fortunately.",
+            5.326,
+            6.046
+          ],
+          [
+            "Mine",
+            6.526,
+            6.846
+          ],
+          [
+            "has",
+            6.966,
+            7.086
+          ],
+          [
+            "boundaries.",
+            7.246,
+            8.046
+          ]
+        ]
+      }
+    },
+    {
+      "type": "outro",
+      "cta": "pipx install navig",
+      "tag": "Power needs permission.",
+      "follow": "navig.run · follow for one command a day"
+    }
+  ]
+}

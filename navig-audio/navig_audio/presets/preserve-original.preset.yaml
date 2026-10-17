@@ -1,0 +1,15 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/preserve-original
+name: Preserve Original
+tool: audio.enhance
+layer: config
+category: Restoration
+description: 'Strict restoration: fixes only what is measured (clipping, DC offset, hum, clicks, steady
+  noise) and protects the true peak. No EQ, compression, reverb or widening. The default.'
+tags:
+- enhance
+- preserve
+params:
+  mode: preserve

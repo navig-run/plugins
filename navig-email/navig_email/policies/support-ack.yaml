@@ -1,0 +1,16 @@
+# Support acknowledgment — confirm receipt, never claim a fix.
+id: support-ack
+title: Support acknowledgment
+action: send
+category: support
+senders: ["*"]
+require_auth: true
+confidence: 0.75
+delay: 15m
+limits: { per_thread: 1, sender_cooldown: 24h, daily: 30 }
+style: plain
+say: >-
+  Confirm that the support message was received. Do not say the problem is solved, do not
+  diagnose it, do not give a timeline, and do not ask for passwords or payment details.
+review_words: [refund, urgent, lawyer]
+notify: true

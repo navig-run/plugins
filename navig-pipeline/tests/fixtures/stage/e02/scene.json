@@ -1,0 +1,198 @@
+{
+  "title": "Pull any app off your Android",
+  "episode": "S01·E02",
+  "segments": [
+    {
+      "type": "hook",
+      "title": "Your Android tablet has *secrets*",
+      "sub": "One command each. **No root.**",
+      "art": "kraken"
+    },
+    {
+      "type": "terminal",
+      "cast": "1-info.cast",
+      "title": "~ connected device",
+      "step": "1/4",
+      "caption": "Connected over *wifi debugging*",
+      "pace": 7,
+      "hold": 2.2,
+      "highlight": [
+        "Dev mode"
+      ],
+      "command": "navig mobile info"
+    },
+    {
+      "type": "terminal",
+      "cast": "2-appinfo.cast",
+      "title": "~ the target",
+      "step": "2/4",
+      "caption": "A *built-in* system app",
+      "pace": 7,
+      "hold": 2.2,
+      "highlight": [
+        "Version"
+      ],
+      "command": "navig mobile apps info com.samsung.android.app.notes"
+    },
+    {
+      "type": "terminal",
+      "cast": "3-extract.cast",
+      "title": "~ navig mobile apps extract",
+      "step": "3/4",
+      "caption": "The APK, *pulled in one command*",
+      "pace": 6,
+      "hold": 2.6,
+      "highlight": [
+        "Saved"
+      ],
+      "speech": {
+        "cues": [
+          [
+            "One command pulls the whole package off the device.",
+            0.265,
+            3.625
+          ]
+        ],
+        "words": [
+          [
+            "One",
+            0.265,
+            0.505
+          ],
+          [
+            "command",
+            0.585,
+            1.065
+          ],
+          [
+            "pulls",
+            1.145,
+            1.385
+          ],
+          [
+            "the",
+            1.465,
+            1.625
+          ],
+          [
+            "whole",
+            1.745,
+            1.865
+          ],
+          [
+            "package",
+            2.025,
+            2.425
+          ],
+          [
+            "off",
+            2.505,
+            2.665
+          ],
+          [
+            "the",
+            2.705,
+            2.745
+          ],
+          [
+            "device.",
+            2.825,
+            3.625
+          ]
+        ]
+      },
+      "command": "navig mobile apps extract com.samsung.android.app.notes"
+    },
+    {
+      "type": "terminal",
+      "cast": "4-osint.cast",
+      "title": "~ what it can reach",
+      "step": "4/4",
+      "caption": "Even the *notes* app wants everything",
+      "pace": 5,
+      "hold": 3.0,
+      "dwell": 1.0,
+      "highlight": [
+        "7 high-risk"
+      ],
+      "speech": {
+        "cues": [
+          [
+            "Even the built-in notes app wants camera,",
+            1.227,
+            3.947
+          ],
+          [
+            "microphone, and every file.",
+            4.147,
+            6.267
+          ]
+        ],
+        "words": [
+          [
+            "Even",
+            1.227,
+            1.547
+          ],
+          [
+            "the",
+            1.627,
+            1.707
+          ],
+          [
+            "built-in",
+            1.827,
+            2.107
+          ],
+          [
+            "notes",
+            2.267,
+            2.587
+          ],
+          [
+            "app",
+            2.707,
+            2.827
+          ],
+          [
+            "wants",
+            2.907,
+            3.147
+          ],
+          [
+            "camera,",
+            3.227,
+            3.947
+          ],
+          [
+            "microphone,",
+            4.147,
+            4.747
+          ],
+          [
+            "and",
+            4.867,
+            4.987
+          ],
+          [
+            "every",
+            5.067,
+            5.387
+          ],
+          [
+            "file.",
+            5.467,
+            6.267
+          ]
+        ]
+      },
+      "command": "navig mobile osint apps com.samsung.android.app.notes"
+    },
+    {
+      "type": "outro",
+      "cta": "pipx install \"navig[mobile]\"",
+      "tag": "Inspect before you trust.",
+      "follow": "navig.run · follow for one command a day"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/cinematic-creative
+name: Cinematic Creative
+tool: audio.enhance
+layer: config
+category: Creative
+description: 'Creative: added weight and bite, optional room ambience. Labelled creative — not a faithful
+  restoration.'
+tags:
+- enhance
+- cinematic
+params:
+  mode: cinematic
+  space: 'off'

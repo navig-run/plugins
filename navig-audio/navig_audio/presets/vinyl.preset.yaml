@@ -1,0 +1,24 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/vinyl
+name: Vinyl Record
+tool: audio.enhance
+layer: config
+category: Restoration — old media
+description: 'Record transfers: clicks and crackle removed, turntable rumble cut below 25 Hz,
+  surface noise lightly reduced. Music dynamics are kept.'
+tags:
+- enhance
+- restoration
+- vinyl
+params:
+  mode: studio
+  category: music
+  declick: true
+  denoise: light
+  dehum: auto
+  highpass_hz: 25
+  eq: 'off'
+  compress: 'off'
+  trim_silence: true

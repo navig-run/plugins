@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-agentctl"
+version = "0.4.2"
+description = "Agent Control Center (devops section): sessions, worktrees, tasks and the Agent Monitor (runs, hooks, verified lands) — one view, then a controller."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "orchestration", "plugin", "devops", "worktrees", "sessions"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs inside navig only — it wraps core readers (procs, repo, board, work),
+# so unlike navig-github this is NOT standalone. Keep imports lazy anyway:
+# `navig help` must stay <50ms and this is not loaded at CLI boot.
+dependencies = [
+  "navig>=0.1.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot;
+# register() adds the free "agentctl" module + the Observer deck routes.
+[project.entry-points."navig.plugins"]
+agentctl = "navig_agentctl.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+agentctl = "navig_agentctl.commands:agentctl_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_agentctl*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# extension: lives inside navig (wraps core readers); not a standalone product.
+mode = "extension"

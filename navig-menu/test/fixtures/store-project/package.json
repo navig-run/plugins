@@ -1,0 +1,11 @@
+{
+  "name": "atlas-desktop",
+  "description": "desktop app with store publishing",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "store:publish": "node scripts/desktop/store-publish.mjs",
+    "store:stats": "node scripts/desktop/store-stats.mjs",
+    "steam:build": "node scripts/desktop/steam-build.mjs"
+  }
+}

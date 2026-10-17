@@ -1,0 +1,29 @@
+#cloud-config
+# A plain Debian or Ubuntu machine with an owner account, SSH and VMware Tools — nothing else.
+hostname: ${hostname}
+# Not the `keyboard:` module: on the Debian cloud image it fails (no
+# keyboard-configuration tooling yet). This file is what GDM, GNOME and the
+# console read.
+write_files:
+  - path: /etc/default/keyboard
+    content: |
+      XKBMODEL="pc105"
+      XKBLAYOUT="${keyboard}"
+      XKBVARIANT=""
+      XKBOPTIONS=""
+      BACKSPACE="guess"
+users:
+  - name: ${owner}
+    groups: [sudo]
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: "${password_hash}"
+    ssh_authorized_keys:
+      - ${ssh_key}
+ssh_pwauth: false
+package_update: true
+packages:
+  - open-vm-tools
+runcmd:
+  - [mkdir, -p, /var/lib/navig-vm]
+  - [touch, /var/lib/navig-vm/provisioned]

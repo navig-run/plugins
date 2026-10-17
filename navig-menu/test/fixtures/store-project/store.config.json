@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "credsFile": "scripts/desktop/.store-creds.json",
+  "defaults": {
+    "publishMode": "Manual",
+    "category": "DeveloperTools",
+    "storeCut": 0.15,
+    "notesForCertification": "All primary functionality of ${displayName} is available without sign-in."
+  },
+  "apps": [
+    {
+      "id": "atlas",
+      "name": "Atlas",
+      "appId": "9NATLAS00001",
+      "identity": "AcmeSoft.Atlas",
+      "package": "release/atlas/*.msixupload",
+      "metadata": "store/atlas/metadata.json",
+      "screenshots": "store/atlas/screenshots",
+      "addon": {
+        "productId": "AtlasProUpgrade",
+        "storeId": "9PATLASPRO01",
+        "priceUsd": 4.99
+      }
+    },
+    {
+      "id": "compass",
+      "name": "Compass",
+      "appId": "9NCOMPASS001",
+      "identity": "AcmeSoft.Compass",
+      "package": "release/compass/*.msixupload",
+      "metadata": "store/compass/metadata.json"
+    }
+  ]
+}

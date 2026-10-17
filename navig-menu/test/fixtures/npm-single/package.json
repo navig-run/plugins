@@ -1,0 +1,14 @@
+{
+  "name": "npm-single-app",
+  "description": "A plain npm single-package app",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "tsc -p .",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "deploy": "echo deploying"
+  },
+  "dependencies": {
+    "express": "^4.19.0"
+  }
+}

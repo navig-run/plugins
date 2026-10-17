@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-vm"
+version = "0.1.1"
+description = "NAVIG VM module — local VMware Workstation VMs from verified cloud images, provisioned on first boot with cloud-init and driven from `navig vm` (create, start, ssh, snapshots). A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "plugin", "vm", "vmware", "virtual-machine", "cloud-init", "debian", "lab"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: System :: Emulators",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig: core touches go through navig-sdk. pycdlib writes the cloud-init
+# seed ISO (Rock Ridge + Joliet names, which NoCloud needs) — pure Python, no external
+# tool. VMware Workstation itself (vmrun, vmware-vdiskmanager) is an external binary.
+dependencies = ["navig-sdk>=2.7.0", "typer>=0.14.0", "rich>=13.7.0", "pycdlib>=1.14.0"]
+
+[project.scripts]
+navig-vm = "navig_vm.cli:main"
+
+[project.entry-points."navig.plugins"]
+vm = "navig_vm.plugin"
+
+[project.entry-points."navig.commands"]
+vm = "navig_vm.commands.vm:vm_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_vm*"]
+
+[tool.setuptools.package-data]
+navig_vm = ["recipes/*/user-data", "skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+mode = "standalone"

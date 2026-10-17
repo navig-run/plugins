@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="NAVIG">
+  <title>NAVIG</title>
+  <defs>
+    <linearGradient id="navigGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2A6BFF"/>
+      <stop offset="55%" stop-color="#12C8FF"/>
+      <stop offset="100%" stop-color="#17FFF0"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#navigGrad)" fill-rule="evenodd" shape-rendering="geometricPrecision">
+    <path d="M 512 144 L 349 303 L 414 369 L 384 457 L 409 479 L 392 517 L 415 556 L 362 612 L 297 566 L 338 426 L 326 358 L 258 291 L 268 396 L 298 427 L 232 548 L 274 621 L 236 662 L 236 728 L 336 814 L 297 682 L 400 680 L 395 782 L 491 883 L 492 787 L 456 732 L 511 635 L 567 732 L 530 786 L 531 882 L 627 783 L 622 680 L 727 682 L 685 814 L 788 726 L 788 663 L 750 619 L 790 547 L 724 428 L 755 395 L 766 291 L 696 358 L 683 430 L 725 566 L 663 612 L 607 557 L 630 518 L 614 478 L 639 456 L 609 370 L 673 303 Z" />
+    <path d="M 500 182 L 502 184 L 501 533 L 405 449 L 437 361 L 493 192 Z" />
+    <path d="M 521 180 L 532 197 L 584 358 L 617 447 L 613 453 L 521 532 Z" />
+  </g>
+</svg>

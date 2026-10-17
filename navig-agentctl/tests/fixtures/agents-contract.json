@@ -1,0 +1,298 @@
+{
+  "_banner": "AUTHORITATIVE fixture for the /api/deck/agents/* contract (Phases 1 + 2: Observer reads, annotation heartbeat, task-binding ledger). Owned by Agent Control Center (plugins/navig-agentctl). Consumers: the OS Control Center app and tools/forge/navig-dev (whose drift-alarm must walk plugins/navig-agentctl/** — the routes are a PLUGIN, not core). Sample rows encode the live response shapes of deck_routes.py; a shape change updates this file in the same commit as the route change.",
+  "_routes": {
+    "sessions": "GET /api/deck/agents/sessions",
+    "worktrees": "GET /api/deck/agents/worktrees?project=<path>&conflicts=0|1",
+    "tasks": "GET /api/deck/agents/tasks",
+    "heartbeat": "POST /api/deck/agents/heartbeat (LIVE — annotation-only; daemon-derived state/pid/reason are never written)",
+    "bindings": "GET /api/deck/agents/bindings[?all=1] · POST /api/deck/agents/bindings · DELETE /api/deck/agents/bindings/{task_ref} (one active claim per task_ref; release stamps released_at, ledger survives)",
+    "events": "POST /api/deck/agents/events (Agent Monitor ingestion — one event or {events:[≤50]}; idempotent on event_id; all-or-nothing validation)",
+    "runs": "GET /api/deck/agents/runs[?project=&state=&kind=&active=1&limit=] · GET /api/deck/agents/runs/summary · GET /api/deck/agents/runs/{run_id}[?log=1] · POST /api/deck/agents/runs/{run_id}/ack"
+  },
+  "_envelope": {
+    "sessions": "{sessions: [Session], generated_at: string}",
+    "worktrees": "{project: string, worktrees: [Worktree], conflicts: [ConflictPair], generated_at: string}",
+    "tasks": "{tasks: [Task], generated_at: string}",
+    "bindings": "{bindings: [Binding], generated_at}",
+    "runs": "{runs: [Run], generated_at}",
+    "runs_summary": "{summary: RunsSummary, generated_at}",
+    "run_detail": "{run: Run, events: [{at, type, detail}], log?: [string]}  (log = redacted tail, only when ?log=1)"
+  },
+  "sessions": [
+    {
+      "session_id": "9d69d3f1-88aa-4f2b-9c1d-6a1f55e2c001",
+      "pid": 12044,
+      "project_root": "E:\\projects\\apps\\navig",
+      "project": "navig:agent-control-center",
+      "worktree": "agent-control-center",
+      "agent_kind": "claude-code",
+      "editor": "vscode",
+      "state": "active",
+      "reason": "tool running (bun)",
+      "last_activity_at": null,
+      "owner": "code[8143]",
+      "mem_mb": 742.5
+    },
+    {
+      "session_id": "pid:44120",
+      "pid": 44120,
+      "project_root": "E:\\projects\\apps\\navig",
+      "project": "navig",
+      "worktree": "",
+      "agent_kind": "claude-code",
+      "editor": "",
+      "state": "idle",
+      "reason": "transcript untouched 26h",
+      "last_activity_at": null,
+      "owner": "",
+      "mem_mb": 512.0
+    },
+    {
+      "_note": "state 'stale' exists ONLY on registry-only rows (session absent from the latest procs snapshot; merged in from the ledger). Never emitted by a live snapshot.",
+      "session_id": "3f7e0237-dc01-4a9e-b3aa-9c2e55e2c002",
+      "pid": 9936,
+      "project_root": "E:\\projects\\apps\\schema",
+      "project": "schema",
+      "worktree": "",
+      "agent_kind": "claude-code",
+      "editor": "vscode",
+      "state": "stale",
+      "reason": "not seen in the latest snapshot",
+      "last_activity_at": null,
+      "owner": "code[8143]",
+      "mem_mb": 0.0
+    }
+  ],
+  "worktrees": [
+    {
+      "path": "E:\\projects\\apps\\navig",
+      "name": "navig (main checkout)",
+      "branch": "main",
+      "head": "f7d9552c09ab",
+      "is_primary": true,
+      "is_sibling": false,
+      "locked": "",
+      "ahead": 0,
+      "behind": 0,
+      "dirty": false,
+      "last_commit": {
+        "sha": "f7d9552c09ab",
+        "subject": "fix(desktop): crash-chrome reports only extensions",
+        "at": "2026-10-13T08:02:00Z"
+      }
+    },
+    {
+      "path": "E:\\projects\\apps\\navig\\.dev\\worktrees\\agent-control-center",
+      "name": "agent-control-center",
+      "branch": "feat/agent-control-center",
+      "head": "a1b2c3d4e5f6",
+      "is_primary": false,
+      "is_sibling": false,
+      "locked": "",
+      "ahead": 4,
+      "behind": 0,
+      "dirty": true,
+      "last_commit": {
+        "sha": "a1b2c3d4e5f6",
+        "subject": "feat(agentctl): observer routes + registry",
+        "at": "2026-10-13T09:58:00Z"
+      }
+    }
+  ],
+  "conflicts": [
+    {
+      "_note": "Pairwise merge-tree radar, opt-in (?conflicts=1). NOT a per-worktree flag — one entry per colliding pair.",
+      "a": "accept-orphan-noise",
+      "b": "dashboard-speed",
+      "branch_a": "feat/accept-orphan-noise +dirty",
+      "branch_b": "feat/dashboard-speed",
+      "status": "conflict",
+      "files": [
+        "core/navig/store/board.py"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "ref": "work:agent-control-center",
+      "source": "work",
+      "title": "Agent Control Center — Phase 1 Observer",
+      "status": "active",
+      "owner": "backend-worker",
+      "deps": [],
+      "worktree": "agent-control-center",
+      "ref_type": "",
+      "ref_id": "",
+      "updated_at": "2026-10-13T09:30:00.000000Z",
+      "gate": "",
+      "priority": "normal"
+    },
+    {
+      "ref": "board:a37b7614-e8c8",
+      "source": "board",
+      "title": "Merge README screenshot assets",
+      "status": "review",
+      "owner": "running",
+      "deps": [
+        "board:da7263fd-a532"
+      ],
+      "worktree": "",
+      "ref_type": "commit",
+      "ref_id": "f7d9552c09",
+      "updated_at": "2026-10-13T08:15:00.000000Z",
+      "gate": "waiting",
+      "priority": "high"
+    }
+  ],
+  "_phase2_heartbeat": {
+    "_note": "LIVE (Phase 2a). Annotation, not control: accepts ONLY the fields below; state/pid/reason in a body are IGNORED. Daemon-derived fields always win. Response: {ok: true, session_id}. 400 on malformed body. Mounting commit updates this note in the same change.",
+    "route": "POST /api/deck/agents/heartbeat",
+    "payload": {
+      "session_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "project_root": "E:\\projects\\apps\\navig",
+      "worktree": "agent-control-center",
+      "agent_kind": "claude-code",
+      "editor": "vscode",
+      "owner": "session-1499cf79",
+      "last_activity_at": "2026-10-13T12:00:00.000Z"
+    }
+  },
+  "bindings": [
+    {
+      "task_ref": "board:a37b7614-e8c8-4ea4-b5ac-708c2d38f6ce",
+      "session_id": "9d69d3f1-88aa-4f2b-9c1d-6a1f55e2c001",
+      "bound_at": "2026-10-14T09:00:00.000000Z",
+      "released_at": null,
+      "note": "claimed at spawn"
+    },
+    {
+      "task_ref": "work:agent-control-center",
+      "session_id": "vscode-gdh2fi",
+      "bound_at": "2026-10-13T18:30:00.000000Z",
+      "released_at": "2026-10-14T08:00:00.000000Z",
+      "note": "released after landing — ledger row, shown only with ?all=1"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "cc:9d69d3f1-88aa-4f2b-9c1d-6a1f55e2c001",
+      "session_id": "9d69d3f1-88aa-4f2b-9c1d-6a1f55e2c001",
+      "parent_run_id": "",
+      "kind": "session",
+      "project": "navig",
+      "worktree": "E:/projects/apps/navig/.dev/worktrees/agent-monitor",
+      "node": "WORKSTATION",
+      "label": "Claude Code · navig",
+      "command": "",
+      "pid": null,
+      "state": "running",
+      "phase": "working",
+      "started_at": "2026-10-16T09:00:00.000000Z",
+      "ended_at": null,
+      "elapsed_s": 742,
+      "idle_s": 4,
+      "last_activity_at": "2026-10-16T09:12:18.000000Z",
+      "exit_code": null,
+      "verified": null,
+      "detail": "Bash: npm run land",
+      "stages": [
+        {
+          "name": "Wire the Dock chip",
+          "state": "done",
+          "at": "2026-10-16T09:10:00.000000Z"
+        }
+      ],
+      "stages_done": 1,
+      "stages_total": null,
+      "has_log": false,
+      "acked": false
+    },
+    {
+      "run_id": "run:3f2a9c1b7d10",
+      "session_id": "",
+      "parent_run_id": "",
+      "kind": "land",
+      "project": "navig",
+      "worktree": "agent-monitor",
+      "node": "WORKSPACE",
+      "label": "land feat/agent-monitor",
+      "command": "npm run land",
+      "pid": 4242,
+      "state": "succeeded",
+      "phase": "idle",
+      "started_at": "2026-10-16T09:20:00.000000Z",
+      "ended_at": "2026-10-16T09:31:10.000000Z",
+      "elapsed_s": 670,
+      "idle_s": null,
+      "last_activity_at": "2026-10-16T09:31:10.000000Z",
+      "exit_code": 0,
+      "verified": true,
+      "detail": "a1b2c3d4e verified on origin/main",
+      "stages": [
+        {
+          "name": "preflight",
+          "state": "done",
+          "at": "2026-10-16T09:20:01.000000Z"
+        },
+        {
+          "name": "gate",
+          "state": "done",
+          "at": "2026-10-16T09:30:00.000000Z"
+        }
+      ],
+      "stages_done": 2,
+      "stages_total": 7,
+      "has_log": true,
+      "acked": false
+    },
+    {
+      "run_id": "run:77aa10c0de55",
+      "session_id": "",
+      "parent_run_id": "",
+      "kind": "navig",
+      "project": "navig",
+      "worktree": "",
+      "node": "WORKSTATION",
+      "label": "nightly build",
+      "command": "npm run build",
+      "pid": null,
+      "state": "failed",
+      "phase": "idle",
+      "started_at": "2026-10-16T08:00:00.000000Z",
+      "ended_at": "2026-10-16T08:03:00.000000Z",
+      "elapsed_s": 180,
+      "idle_s": null,
+      "last_activity_at": "2026-10-16T08:03:00.000000Z",
+      "exit_code": 3,
+      "verified": null,
+      "detail": "",
+      "stages": [],
+      "stages_done": 0,
+      "stages_total": null,
+      "has_log": true,
+      "acked": false
+    }
+  ],
+  "runs_summary": {
+    "running": 1,
+    "stalled": 0,
+    "needs_input": 0,
+    "launched": 0,
+    "failed_unacked": 1,
+    "done_24h": 1,
+    "attention": "failed"
+  },
+  "_phase3_events": {
+    "_note": "POST /api/deck/agents/events body. type ∈ start|activity|stage|needs_input|input_resolved|turn_end|end. Stop → turn_end (never completes a run). state on end ∈ succeeded|failed|interrupted|ended.",
+    "payload": {
+      "event_id": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
+      "run_id": "run:3f2a9c1b7d10",
+      "type": "stage",
+      "stage": {
+        "name": "gate",
+        "state": "running",
+        "detail": "attempt 1/5"
+      }
+    }
+  }
+}

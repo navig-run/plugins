@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-notes"
+version = "0.1.0"
+description = "navig notes -- your web sticky notes on this computer: the NAVIG Dock syncs every note you keep on a page, a site or everywhere, so you can list, search, add and export them from the command line, and NAVIG's Recall can find them (never sent to an AI unless you allow it)."
+keywords = ["navig", "cli", "plugin", "notes", "sticky-notes", "web", "annotations", "search"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: End Users/Desktop",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "navig" }]
+# Runs WITHOUT navig: storage, paths and console come from navig-sdk, which defers to navig
+# when it is installed. The deck routes (for the Dock) exist only inside navig's gateway.
+dependencies = ["navig-sdk>=2.10.0", "typer>=0.9", "rich>=13.7.0"]
+
+[project.scripts]
+navig-notes = "navig_notes.cli:main"
+
+# `navig notes` — NAVIG's CLI mounts every `navig.commands` entry point as a top-level verb.
+[project.entry-points."navig.commands"]
+notes = "navig_notes.commands.notes:app"
+
+# register(): the free `notes` module + /api/deck/notes/* on the gateway hook.
+[project.entry-points."navig.plugins"]
+notes = "navig_notes.plugin"
+
+[tool.setuptools.packages.find]
+include = ["navig_notes*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-notes`, no navig needed) AND as `navig notes` inside navig.
+mode = "standalone"

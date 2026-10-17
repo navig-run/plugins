@@ -1,0 +1,233 @@
+/* Reel Stage — a 1080x1920 vertical canvas the reel/clip capture films.
+   Colours come from tokens.css (the generated :root of @navig/tokens); the only values
+   defined here are the stage's own geometry and the Telegram skin, which is Telegram's. */
+
+:root {
+  --w: 1080px;
+  --h: 1920px;
+  /* TikTok's own UI sits over these strips: the action rail (right) and the caption/
+     sound bar (bottom). Nothing load-bearing may live under them. */
+  --safe-top: 150px;
+  --safe-right: 150px;
+  --safe-bottom: 400px;
+  --safe-left: 56px;
+  --glow: #22d3ee;
+  --grad: linear-gradient(135deg, #2A6BFF 0%, #12C8FF 55%, #17FFF0 100%);
+  /* Embedded at compile time when the machine has them (stage.fonts_css) — the stack is
+     the fallback for a machine that does not. JetBrains Mono: the terminal must be
+     deterministic; Slam (Bebas Neue Bold): the kinetic headline face. */
+  --sans: "Geist", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "Geist Mono", "Cascadia Mono", Consolas, monospace;
+  --slam: "Slam", "Bebas Neue", "Arial Narrow", "Segoe UI", sans-serif;
+  --term-size: 33px;
+  /* Telegram dark ("Night") — Telegram's palette, not ours. */
+  --tg-bg: #0e1621;
+  --tg-head: #17212b;
+  --tg-in: #182533;
+  --tg-out: #2b5278;
+  --tg-text: #f5f5f5;
+  --tg-dim: #6d7f8f;
+  --tg-link: #6ab3f3;
+  --tg-btn: rgba(255, 255, 255, 0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: var(--w); height: var(--h); overflow: hidden; background: var(--background); }
+body { color: var(--foreground); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+
+#stage { position: relative; width: var(--w); height: var(--h); overflow: hidden; background:
+  radial-gradient(1200px 900px at 50% 18%, rgba(44, 139, 183, 0.22), transparent 70%),
+  radial-gradient(900px 700px at 80% 95%, rgba(34, 211, 238, 0.10), transparent 70%),
+  var(--background); }
+/* ── film layer ──────────────────────────────────────────────────────────────
+   The frame the platform UI sits on, over everything: top falloff (the HUD reads on
+   dark), bottom falloff (TikTok's caption/sound bar sits on dark), a vignette, 1-in-3
+   scanlines, and corner crop brackets. Curves follow the schema promo's measured falloff
+   (top alpha .67→0 by 360px, bottom 0→.78 by 620px, both squared so the middle of the
+   frame stays clean). */
+.film { position: absolute; inset: 0; z-index: 6; pointer-events: none;
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, .67) 0, rgba(0, 0, 0, .30) 90px,
+                      rgba(0, 0, 0, .16) 180px, rgba(0, 0, 0, .05) 280px, transparent 360px),
+    linear-gradient(0deg, rgba(0, 0, 0, .78) 0, rgba(0, 0, 0, .42) 220px,
+                      rgba(0, 0, 0, .15) 400px, transparent 620px),
+    radial-gradient(ellipse 145% 100% at 50% 45%, transparent 55%, rgba(0, 0, 0, .55) 100%); }
+.film::after { content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(0, 0, 0, .16) 0 1px, transparent 1px 3px); }
+.film .bk { position: absolute; width: 70px; height: 70px; border: 0 solid rgba(255, 255, 255, .27); }
+.film .tl { top: 44px; left: 44px; border-top-width: 3px; border-left-width: 3px; }
+.film .tr { top: 44px; right: 44px; border-top-width: 3px; border-right-width: 3px; }
+.film .bl { bottom: 44px; left: 44px; border-bottom-width: 3px; border-left-width: 3px; }
+.film .br { bottom: 44px; right: 44px; border-bottom-width: 3px; border-right-width: 3px; }
+
+.seg { position: absolute; inset: 0; opacity: 0; }
+.seg.on { opacity: 1; }
+
+/* ── HUD: mark + wordmark left, transmission readout right ───────────────── */
+.bug { position: absolute; top: 88px; left: var(--safe-left); display: flex; align-items: center;
+  gap: 16px; font: 700 34px/1 var(--sans); letter-spacing: 0.18em; z-index: 7; }
+.bug img { width: 54px; height: 54px; filter: drop-shadow(0 0 14px rgba(34, 211, 238, 0.6)); }
+.hud-r { position: absolute; top: 82px; right: 160px; text-align: right; z-index: 7;
+  font: 500 22px/1.5 var(--mono); letter-spacing: 0.04em; color: rgba(245, 245, 245, 0.68); }
+.hud-r .sq { display: inline-block; width: 11px; height: 11px; margin-right: 10px;
+  background: var(--accent); box-shadow: 0 0 8px rgba(34, 211, 238, 0.8); }
+.hud-r .site { color: rgba(245, 245, 245, 0.42); }
+
+/* ── caption band (kinetic, above the panel) ────────────────────────────── */
+.cap { position: absolute; left: var(--safe-left); right: var(--safe-right); top: 180px;
+  font: 800 56px/1.1 var(--sans); letter-spacing: -0.02em; z-index: 4; }
+.cap .step { display: inline-block; margin-bottom: 18px; padding: 10px 18px; border-radius: 12px;
+  background: var(--grad); color: var(--accent-foreground); font: 800 30px/1 var(--mono);
+  letter-spacing: 0.02em; }
+.cap .line { display: block; }
+.cap .w { display: inline-block; white-space: pre; }
+.cap em, .hook .title em { font-style: normal; background: var(--grad); -webkit-background-clip: text;
+  background-clip: text; color: transparent; }
+/* karaoke transcript (segment.speech): the words the narrator is saying, in the caption
+   band — spoken words land with a pop, the newest one carries the accent, the rest hold */
+.cap .sline { min-height: 1.08em; }
+.cap .sw { display: inline-block; white-space: pre; opacity: 0;
+  will-change: transform, opacity; }
+.cap .sw.live { background: var(--grad); -webkit-background-clip: text; background-clip: text;
+  color: transparent; filter: drop-shadow(0 0 18px rgba(34, 211, 238, 0.35)); }
+
+/* ── hook ───────────────────────────────────────────────────────────────── */
+.hook .art { position: absolute; left: 50%; top: 52%; width: 620px; height: 620px;
+  transform: translate(-50%, -50%); object-fit: contain;
+  filter: drop-shadow(0 0 60px rgba(34, 211, 238, 0.45)); }
+.hook .ring { position: absolute; left: 50%; top: 52%; width: 760px; height: 760px;
+  border-radius: 50%; transform: translate(-50%, -50%);
+  border: 2px solid rgba(34, 211, 238, 0.35); box-shadow: 0 0 120px rgba(34, 211, 238, 0.18) inset; }
+/* the slam: Bebas Neue Bold, all-caps, size set by the JS word ladder; the soft dark
+   shadow is what keeps white type readable over any plate (schema's blurred-sprite trick) */
+.hook .title { position: absolute; left: var(--safe-left); right: var(--safe-right); top: 240px;
+  font-family: var(--slam); font-weight: 700; text-transform: uppercase;
+  font-size: var(--slam-size, 195px); line-height: 0.92; letter-spacing: 0.005em;
+  text-wrap: balance; text-shadow: 0 8px 40px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(0, 0, 0, 0.55); }
+/* the brief RGB-split flash on a slam landing (JS drives it off the frame clock, never
+   a CSS animation — a stepped render must be a pure function of t) */
+.hook .title.fx { filter: none; }
+.hook .sub { position: absolute; left: var(--safe-left); right: var(--safe-right); top: 1400px;
+  font: 600 50px/1.2 var(--sans); color: var(--muted-foreground); }
+.hook .sub b { color: var(--accent); font-weight: 700; }
+
+/* ── terminal panel ─────────────────────────────────────────────────────── */
+.term { position: absolute; left: 40px; right: calc(var(--safe-right) - 40px); top: 470px;
+  bottom: calc(var(--safe-bottom) - 40px); border-radius: 28px; overflow: hidden;
+  background: rgba(8, 10, 14, 0.92); border: 1px solid rgba(34, 211, 238, 0.22);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+              0 0 80px rgba(44, 139, 183, 0.18); transform-origin: 50% 100%; }
+.term .bar { height: 64px; display: flex; align-items: center; gap: 14px; padding: 0 26px;
+  background: rgba(255, 255, 255, 0.035); border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font: 500 24px/1 var(--mono); color: var(--muted-foreground); }
+.term .bar i { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+.term .bar i:nth-child(1) { background: #ff5f57; } .term .bar i:nth-child(2) { background: #febc2e; }
+.term .bar i:nth-child(3) { background: #28c840; }
+.term .bar span { margin-left: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.term .screen { position: absolute; left: 0; right: 0; top: 64px; bottom: 0; padding: 24px 26px;
+  overflow: hidden; }
+.term .rows { position: absolute; left: 26px; right: 26px; top: 24px;
+  font: 400 var(--term-size)/1.25 var(--mono); white-space: pre; color: #e6edf3; }
+.term .row { min-height: 1.25em; border-radius: 6px; transition: none; }
+/* one terminal cell per glyph, whatever font ends up drawing it */
+.term .g { display: inline-block; width: 1ch; text-align: center; overflow: visible; }
+.term .g.w2 { width: 2ch; }
+/* box drawing: stretch to the full line box so table rules join across rows */
+.term .g.bx { transform: scaleY(1.3); }
+.term .row.hl { background: rgba(34, 211, 238, 0.13); box-shadow: -8px 0 0 var(--accent); }
+.term .prompt { color: var(--accent); font-weight: 700; }
+/* the typed command is not part of the capture's grid — let a long one wrap, not overflow.
+   Wrap at SPACES first (a long package name moves whole to the next line); break inside a
+   token only when that token alone cannot fit the line — break-all split
+   `com.samsung.androi` / `d.app.notes` mid-name on every long command. */
+.term .row.cmdrow { white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; }
+.term .cmd { color: #ffffff; font-weight: 600; }
+.term .cursor { display: inline-block; width: 0.6em; height: 1.1em; vertical-align: -0.18em;
+  background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+.term .b { font-weight: 700; } .term .d { opacity: 0.6; } .term .i { font-style: italic; }
+.term .u { text-decoration: underline; }
+
+/* ── telegram ───────────────────────────────────────────────────────────── */
+.tg { position: absolute; left: 40px; right: calc(var(--safe-right) - 40px); top: 400px;
+  bottom: calc(var(--safe-bottom) - 40px); border-radius: 34px; overflow: hidden;
+  background: var(--tg-bg); border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65); font-family: system-ui, "Segoe UI", Roboto, sans-serif; }
+.tg .head { height: 120px; display: flex; align-items: center; gap: 22px; padding: 0 28px;
+  background: var(--tg-head); border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
+.tg .head .back { font-size: 44px; color: var(--tg-link); width: 30px; }
+.tg .head img { width: 78px; height: 78px; border-radius: 50%; }
+.tg .head .who { font: 600 34px/1.15 system-ui, "Segoe UI", sans-serif; color: var(--tg-text); }
+.tg .head .st { font: 400 25px/1.2 system-ui, sans-serif; color: var(--tg-link); }
+.tg .wall { position: absolute; left: 0; right: 0; top: 120px; bottom: 104px; overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(106, 179, 243, 0.05) 0 2px, transparent 3px) 0 0 / 90px 90px,
+    radial-gradient(circle at 70% 70%, rgba(106, 179, 243, 0.04) 0 2px, transparent 3px) 0 0 / 120px 120px,
+    var(--tg-bg); }
+.tg .msgs { position: absolute; left: 22px; right: 22px; bottom: 18px; display: flex;
+  flex-direction: column; gap: 14px; }
+.tg .m { max-width: 86%; padding: 16px 22px 12px; border-radius: 26px; color: var(--tg-text);
+  font: 400 31px/1.34 system-ui, "Segoe UI", Roboto, sans-serif; white-space: pre-wrap;
+  word-break: break-word; transform-origin: 0 100%; }
+.tg .m.in { align-self: flex-start; background: var(--tg-in); border-bottom-left-radius: 8px; }
+.tg .m.out { align-self: flex-end; background: var(--tg-out); border-bottom-right-radius: 8px;
+  transform-origin: 100% 100%; }
+.tg .m b { font-weight: 700; } .tg .m code { font-family: var(--mono); font-size: 0.9em;
+  color: #9fd3ff; } .tg .m a { color: var(--tg-link); text-decoration: none; }
+.tg .m .meta { display: block; text-align: right; font-size: 21px; color: rgba(255, 255, 255, 0.45);
+  margin-top: 4px; }
+.tg .m.out .meta::after { content: " ✓✓"; color: #6ab3f3; }
+.tg .m img.media { display: block; width: 100%; border-radius: 18px; margin: -4px 0 10px; }
+.tg .kb { align-self: flex-start; width: 86%; display: grid; gap: 8px; margin-top: -6px; }
+.tg .kb .r { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+.tg .kb .k { padding: 18px 10px; border-radius: 16px; background: var(--tg-btn); text-align: center;
+  font: 500 28px/1.1 system-ui, sans-serif; color: var(--tg-text); backdrop-filter: blur(6px); }
+.tg .kb .k.tap { background: rgba(106, 179, 243, 0.35); box-shadow: 0 0 0 3px rgba(106, 179, 243, 0.6); }
+.tg .typing { align-self: flex-start; padding: 22px 26px; border-radius: 26px; background: var(--tg-in);
+  display: flex; gap: 10px; }
+.tg .typing i { width: 14px; height: 14px; border-radius: 50%; background: var(--tg-dim); display: block; }
+.tg .input { position: absolute; left: 0; right: 0; bottom: 0; height: 104px; display: flex;
+  align-items: center; gap: 18px; padding: 0 26px; background: var(--tg-head);
+  font: 400 30px/1 system-ui, sans-serif; color: var(--tg-dim); }
+.tg .input .field { flex: 1; white-space: nowrap; overflow: hidden; }
+.tg .input .field.typed { color: var(--tg-text); }
+.tg .input .send { width: 64px; height: 64px; border-radius: 50%; background: var(--tg-link);
+  display: grid; place-items: center; color: #fff; font-size: 30px; }
+
+/* ── image ──────────────────────────────────────────────────────────────── */
+.imageseg .frame { position: absolute; left: calc((var(--w) - var(--safe-right) + 40px) / 2); top: 960px;
+  width: 700px; padding: 26px 26px 22px; border-radius: 30px; overflow: hidden;
+  background: rgba(8, 10, 14, 0.92); border: 1px solid rgba(34, 211, 238, 0.35);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6), 0 0 90px rgba(34, 211, 238, 0.22); }
+.imageseg .frame img { display: block; width: 100%; border-radius: 16px; image-rendering: pixelated; }
+.imageseg .frame .label { margin-top: 18px; text-align: center; font: 600 34px/1 var(--mono); color: var(--accent); }
+.imageseg .frame .sweep { position: absolute; left: 0; right: 0; top: 0; height: 100%; pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgba(34, 211, 238, 0.16) 48%, rgba(34, 211, 238, 0.32) 50%, transparent 52%); }
+
+/* ── phone frame (wraps .term or .tg) ───────────────────────────────────── */
+.phone .term, .phone .tg { border-radius: 64px; border: 14px solid #0b0d11;
+  box-shadow: 0 0 0 3px #2a2f38, 0 50px 140px rgba(0, 0, 0, 0.7), 0 0 90px rgba(44, 139, 183, 0.22); }
+.phone .tg .head { padding-top: 26px; height: 146px; } .phone .tg .wall { top: 146px; }
+
+/* ── outro ──────────────────────────────────────────────────────────────── */
+.outro .mark { position: absolute; left: 50%; top: 560px; width: 380px; height: 380px;
+  transform: translate(-50%, -50%); filter: drop-shadow(0 0 50px rgba(34, 211, 238, 0.55)); }
+.outro .word { position: absolute; left: 0; right: 0; top: 820px; text-align: center;
+  font: 800 120px/1 var(--sans); letter-spacing: 0.22em; padding-left: 0.22em;
+  background: linear-gradient(180deg, #E8EEF4, #9FB2C4); -webkit-background-clip: text;
+  background-clip: text; color: transparent; }
+.outro .tag { position: absolute; left: 0; right: 0; top: 975px; text-align: center;
+  font: 600 40px/1 var(--mono); color: var(--accent); letter-spacing: 0.04em; }
+.outro .cta { position: absolute; left: 50%; top: 1110px; transform: translateX(-50%);
+  padding: 28px 40px; border-radius: 20px; white-space: nowrap; background: rgba(8, 10, 14, 0.9);
+  border: 1px solid rgba(34, 211, 238, 0.4); font: 600 46px/1 var(--mono); color: #fff;
+  box-shadow: 0 0 60px rgba(34, 211, 238, 0.2); }
+.outro .cta .p { color: var(--accent); }
+.outro .follow { position: absolute; left: 0; right: 0; top: 1270px; text-align: center;
+  font: 600 38px/1.2 var(--sans); color: var(--muted-foreground); }
+
+/* ── debug guides (?guides=1) ───────────────────────────────────────────── */
+.guides { position: absolute; inset: 0; pointer-events: none; z-index: 99; }
+.guides div { position: absolute; background: rgba(255, 0, 80, 0.22); outline: 2px dashed #ff0050; }
+.guides .t { left: 0; right: 0; top: 0; height: var(--safe-top); }
+.guides .r { top: 0; bottom: 0; right: 0; width: var(--safe-right); }
+.guides .bt { left: 0; right: 0; bottom: 0; height: var(--safe-bottom); }

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-chats"
+version = "0.1.0"
+description = "navig chats -- a local library for your AI conversations: import your ChatGPT data export, save chats from the page with the NAVIG Dock, search every message offline, organise them in folders, and export to Markdown, HTML, JSON or a checksummed zip."
+keywords = ["navig", "cli", "plugin", "chatgpt", "chat", "conversations", "archive", "export", "search"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: End Users/Desktop",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "navig" }]
+# Runs WITHOUT navig: storage, paths and console come from navig-sdk, which defers to navig
+# when it is installed. The deck routes (for the Dock) exist only inside navig's gateway.
+dependencies = ["navig-sdk>=2.10.0", "typer>=0.9", "rich>=13.7.0"]
+
+[project.scripts]
+navig-chats = "navig_chats.cli:main"
+
+# `navig chats` — NAVIG's CLI mounts every `navig.commands` entry point as a top-level verb.
+[project.entry-points."navig.commands"]
+chats = "navig_chats.commands.chats:app"
+
+# register(): the free `chats` module + /api/deck/chats/* on the gateway hook.
+[project.entry-points."navig.plugins"]
+chats = "navig_chats.plugin"
+
+[tool.setuptools.packages.find]
+include = ["navig_chats*"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-chats`, no navig needed) AND as `navig chats` inside navig.
+mode = "standalone"

@@ -1,0 +1,10 @@
+# Isolate navig-menu from the parent NAVIG pnpm workspace.
+#
+# NAVIG (E:\projects\apps\navig) is itself a pnpm workspace. Because navig-menu now
+# lives inside it, a bare `pnpm install` would otherwise walk UP, adopt the
+# 15-project workspace, and reconcile sibling projects (several of which are
+# npm-managed) — destructive. This file makes pnpm treat navig-menu as its OWN
+# workspace root, so installs here only ever touch navig-menu.
+#
+# Equivalent safety: `pnpm install --ignore-workspace`.
+packages: []

@@ -1,0 +1,684 @@
+{
+ "schema": "navig-style-templates/v1",
+ "source": "wave1/STYLE-TEMPLATES.md — extracted 2026-10-14 from the owner's inspiration library (images/cxema/art listed files + chat attachments + .media intro-logo)",
+ "tokens": {
+  "red": "#D63A32",
+  "ink": "#0A0D12",
+  "steel": "#343C4D"
+ },
+ "rules": [
+  "NO text, letters, numbers or logos in generated pixels — the Schema mark is composited afterwards",
+  "barcode-on-people: plain bars on neck/palm/wrist, sometimes, digits composited by us",
+  "red is the only saturated colour; everything else desaturated",
+  "LOGO LAW: never paste the logo — corner mark, text lockup, or GENERATED IN only (video = re-clip with logo in start frame; still = img2img/Kontext regen that eats our logo and the generation)"
+ ],
+ "styles": [
+  {
+   "id": "INS-01",
+   "kind": "image",
+   "title": "crimson-kaleido-texture",
+   "source": "art-0062.jpg; img-7658-topaz",
+   "prompt": "Seamless kaleidoscopic hexagonal mandala of layered crimson paper-cut texture on pure black, deep #D63A32 red only, soft top light, macro paper fibres, ritual geometric repetition, no text, no logos.",
+   "motion": "the pattern slowly breathes, layers shift in parallax, red glow pulses"
+  },
+  {
+   "id": "INS-02",
+   "kind": "image",
+   "title": "particle-emblem-form",
+   "source": "cxema-art-0055.jpg; .media intro-logo",
+   "prompt": "Swarm of glowing crimson particles assembling into an abstract circular emblem out of pure black, motion-blurred trails, shallow depth, one cool cyan spark among the red, cinematic macro, no text.",
+   "motion": "particles orbit and collapse inward, the emblem pulses bright then settles"
+  },
+  {
+   "id": "INS-03",
+   "kind": "image",
+   "title": "glow-visor-cult",
+   "source": "08-acem-uhg1v4.jpg; art-0029.png",
+   "prompt": "A dark vaulted hall of anonymous silhouettes, each figure's face replaced by one horizontal glowing crimson visor bar, volumetric haze, wet floor reflections, #D63A32 as the only light source, 35mm, no text.",
+   "motion": "the visors blink in sequence, haze drifts, one figure steps forward"
+  },
+  {
+   "id": "INS-04",
+   "kind": "image",
+   "title": "glyph-mask-hood",
+   "source": "art-0103.png; art-0117.jpg; art-0069.jpg; art-0104.jpg",
+   "prompt": "A hooded stranger in night fog, face hidden behind a painted crimson glyph mask (single triangle outline), collar detail, teal-black background, one red practical light, handheld 50mm, film grain, no text.",
+   "motion": "the glyph flickers like a failing sign, fog rolls, figure breathing"
+  },
+  {
+   "id": "INS-05",
+   "kind": "image",
+   "title": "sunburst-propaganda",
+   "source": "cxema-art-0067.jpg",
+   "prompt": "Red-and-black agitprop poster artwork: hooded figure rising over radiating sunburst rays, screen-printed ink texture, halftone noise, torn paper edges, flat two-colour crimson/black, no readable text anywhere, composition leaving the upper third clear for type.",
+   "motion": "ink texture jitters, rays rotate slowly, grain flickers"
+  },
+  {
+   "id": "INS-06",
+   "kind": "image",
+   "title": "red-duotone-street",
+   "source": "cxema-art-0064.jpg; cxema-art-0024.jpg",
+   "prompt": "Candid street crowd photograph reduced to crimson-and-black duotone, heavy grain, blown highlights, documentary flash, one subject in focus, #D63A32 tint on everything, no text.",
+   "motion": "slow shutter drag, crowd blurs, grain dances"
+  },
+  {
+   "id": "INS-07",
+   "kind": "image",
+   "title": "dark-editorial-spread",
+   "source": "cxema-art-0032.jpg; cxemameta-recovered.png",
+   "prompt": "Dark editorial book spread on pure black, left page empty for type, right page a chiaroscuro classical portrait half-swallowed by shadow, one small crimson accent, museum lighting, no text on the image.",
+   "motion": "page light shifts, dust floats, red accent breathes"
+  },
+  {
+   "id": "INS-08",
+   "kind": "image",
+   "title": "heraldic-metal-artifact",
+   "source": "cxema-art-0031.jpg; cxema-art-0053.jpg; art-0085.jpg; art-0013.jpg",
+   "prompt": "A tattered black battle flag on a steel pole carrying a crimson brush-stroke emblem (abstract shape, no letters), studio light, museum photography, deep shadows, white-grey backdrop, no text. Alt subjects: gold relief box; silver gauntlets on red velvet.",
+   "motion": "fabric stirs, metal catches a slow specular sweep"
+  },
+  {
+   "id": "INS-09",
+   "kind": "image",
+   "title": "pixel-shrine",
+   "source": "cxema-art-0112.jpg; cxema-art-0238.jpg; art-0009.jpg; art-0080.jpg",
+   "prompt": "Retro pixel-art shrine: grey sprite figure inside a triangle altar of ASCII characters on CRT-black, one crimson accent item, 8-bit dithering, scanlines, no text, no letters.",
+   "motion": "scanlines roll, sprite blinks, red accent pulses"
+  },
+  {
+   "id": "INS-10",
+   "kind": "image",
+   "title": "night-runner",
+   "source": "art-0069.jpg; cxema-art-0117.jpg",
+   "prompt": "Masked runner in green-teal fog alley at night, hoodie, cropped low angle, drizzle, one crimson signal light far behind, cinematic street photography, no text.",
+   "motion": "runner paces, fog drifts, the red light strobes once"
+  },
+  {
+   "id": "INS-11",
+   "kind": "image",
+   "title": "folk-pixel-textile",
+   "source": "chat attachment 2026-10-14 — black scarf, crimson cross-stitch",
+   "prompt": "Flat-lay photograph of a black wool scarf covered in crimson pixel cross-stitch geometric folk patterns (#D63A32 on black), fringe edges, deep navy backdrop, soft studio light, textile macro, no text.",
+   "motion": "camera drifts along the pattern, threads catch light"
+  },
+  {
+   "id": "INS-12",
+   "kind": "image",
+   "title": "network-node-dark",
+   "source": "ex-machina-robot-girl-hd.jpg; 45289-schematic-circuits",
+   "prompt": "Pure black field of faint white network nodes and connecting lines, subtle depth blur, one small crimson rectangular chip of light, minimal, technical, no text.",
+   "motion": "nodes handshake in sequence, one node flares red"
+  },
+  {
+   "id": "LAY-01",
+   "kind": "layout",
+   "title": "album-dark-statue",
+   "source": "chat attachments — RAMKKA×KHORS666; DT43×A2XBY",
+   "prompt": "Classical marble statue group on pure black, single crimson light raking from one side, deep shadow swallow, museum photography, monochrome otherwise, no text.",
+   "motion": "light slowly rakes, dust drifts",
+   "layout": "square black canvas; top-left ARTIST×ARTIST / TITLE (Inter SemiBold tracked); top-right season + catalog code; bottom-center our mark + tagline caps"
+  },
+  {
+   "id": "LAY-02",
+   "kind": "layout",
+   "title": "map-explainer-video",
+   "source": "chat attachments — INSIDE Geopolitics frames",
+   "prompt": "Dark desaturated terrain map bed with one region washed in crimson, subtle relief texture, no labels.",
+   "motion": "map slow zoom, region wash pulses",
+   "layout": "red tag chip (statement tag) + white headline with red key phrase + WHAT-HAPPENED body + oversized red stat + ALERT opacity stack + corner mark; red replaces yellow everywhere (owner rule)"
+  },
+  {
+   "id": "CYB-01",
+   "kind": "image",
+   "title": "circuit-initiate portrait",
+   "source": "ChatGPT Image Jul 2, 2026, 08_40_08 AM.png",
+   "prompt": "Portrait of a digital initiate: skin traced with fine glowing circuit veins, eyes burning crimson, a red glowing circular sigil medallion over the chest, deep navy circuit-grid background, cold teal shadows, one red hue only, anime-cinematic hybrid, no text.",
+   "motion": "eyes breathe, circuit veins pulse outward from the medallion, data motes drift"
+  },
+  {
+   "id": "CYB-02",
+   "kind": "image",
+   "title": "ritual-sigil-summon",
+   "source": "ChatGPT Image Jul 2, 2026, 09_51_40 PM (3).png",
+   "prompt": "Two street figures watching a crimson occult sigil assemble itself out of floating red particles on a graffiti wall at night, constellation diagram lines drawing themselves in the air, blue-black fog, documentary angle, one red light source, no text.",
+   "motion": "particles converge then shatter-loop, constellation lines draw on, sigil bloom flickers, embers drift"
+  },
+  {
+   "id": "CYB-03",
+   "kind": "image",
+   "title": "glyph-visor hood",
+   "source": "ChatGPT Image Jul 3, 2026, 01_57_31 PM.png (owner: really cool)",
+   "prompt": "A hooded figure whose face is a glowing crimson triangle visor, circuit trigram ornaments on the hood, dark cyber-shrine background with faint red glyphs, teal rim light, 85mm, shallow depth, no text.",
+   "motion": "visor bloom pulses, trigram marks shimmer in sequence, rain streak, one glitch frame every 1.5 s"
+  },
+  {
+   "id": "CYB-04",
+   "kind": "image",
+   "title": "code-ghost hologram",
+   "source": "Mea_Songbird_a_ghost_in_the_algorithm_*.png",
+   "prompt": "A translucent holographic ghost made of cyan-white circuit code standing in a dark alley, symbol geometry floating off its surface, one red practical light far behind, scanline shimmer, volumetric haze, no text.",
+   "motion": "scanline jitter, code symbols cycle, opacity flicker 0.85-1.0 — Digital Ghost signature, red stays the anchor"
+  },
+  {
+   "id": "CYB-05",
+   "kind": "image",
+   "title": "anime ritual-book",
+   "source": "ChatGPT Image Jul 2, 2026, 09_51_23 PM (2).png",
+   "prompt": "Dark anime illustration: masked reader holding open a book whose crimson wax seal glows, pentagram diagram and maps pinned behind, warm lamp against blue night, one red glow as key light, no text.",
+   "motion": "seal glow breathes, dust motes in lamp cone, page flicker"
+  },
+  {
+   "id": "CYB-06",
+   "kind": "image",
+   "title": "rooftop cell",
+   "source": "ChatGPT Image Jul 2, 2026, 09_51_39 PM (1).png",
+   "prompt": "Illustrated night rooftop: a small cell around a table with maps, a crimson flag lifting behind, city skyline glow, dusk blue palette with one red accent, cinematic wide, no text.",
+   "motion": "flag ripples, city lights twinkle, paper flutters"
+  },
+  {
+   "id": "MKT-01",
+   "kind": "image",
+   "title": "node-awaits poster",
+   "source": "ChatGPT Image May 16, 2025, 01_01_22 AM.png",
+   "prompt": "Dark recruitment poster scene: a crowd in shadow with two crimson-eyed figures, a glowing red hexagonal emblem floating centre, ember particles, navy black, no text.",
+   "motion": "emblem hovers, embers rise"
+  },
+  {
+   "id": "MKT-02",
+   "kind": "image",
+   "title": "awakening ensemble",
+   "source": "ChatGPT Image May 16, 2025, 12_12_26 AM.png",
+   "prompt": "Four people in darkness connected by a glowing crimson neural web between their hands, one node pulsing, cinematic haze, no text.",
+   "motion": "signal travels the web, node pulses"
+  },
+  {
+   "id": "MKT-03",
+   "kind": "image",
+   "title": "flag-raise propaganda",
+   "source": "ChatGPT Image May 16, 2025, 03_02_02 PM.png",
+   "prompt": "Vintage two-colour propaganda illustration: silhouettes raising a flag with an abstract crimson brush emblem over a city skyline, cream and red screen-print, halftone, no text.",
+   "motion": "halftone jitter, flag waves"
+  },
+  {
+   "id": "MKT-04",
+   "kind": "image",
+   "title": "zine spread art",
+   "source": "ChatGPT Image May 16, 2025, 04_06_48 AM.png",
+   "prompt": "Red-black-cream zine illustration of a grinning mascot with circuit-brain horns, punk cutout collage, halftone dots, no text.",
+   "motion": "collage cutout wiggle, xerox grain flicker"
+  },
+  {
+   "id": "MKT-05",
+   "kind": "image",
+   "title": "cosmic node-birth",
+   "source": "ChatGPT Image May 16, 2025, 02_29_36 AM.png",
+   "prompt": "A cosmic burst of particles and gears exploding from a crimson emblem at centre, electric filaments on black, deep-space palette, no text.",
+   "motion": "burst loops outward, filaments arc"
+  },
+  {
+   "id": "MKT-06",
+   "kind": "image",
+   "title": "triangle-occult poster",
+   "source": "ChatGPT Image May 16, 2025, 12_08_22 AM.png",
+   "prompt": "Hooded figure before an orange nebula moon, crimson triangle sigil glowing at chest, teal accents, mystic order poster mood, no text.",
+   "motion": "moon drifts, triangle pulses"
+  },
+  {
+   "id": "NMD-01",
+   "kind": "image",
+   "title": "demon-pixel-hex",
+   "source": "chat attachment 2026-10-14 (glitch pixel hex)",
+   "prompt": "Flat pixel-art glitch portrait of a grinning demon inside a hexagon frame, teal/cream/crimson palette on near-black, chunky pixels, datamosh shards flying off, no text.",
+   "motion": "pixel shards scatter-loop, RGB split jitter"
+  },
+  {
+   "id": "NMD-02",
+   "kind": "image",
+   "title": "circuit-temple",
+   "source": "chat attachment 2026-10-14 (pagoda monks)",
+   "prompt": "Flat illustration of a pagoda shrine whose facade is a glowing circuit-board diagram, monks meditating on the veranda, jungle terraces, mint-and-cream palette, one red accent, storybook halftone, no text.",
+   "motion": "circuit lines trace, leaves sway"
+  },
+  {
+   "id": "NMD-03",
+   "kind": "image",
+   "title": "folk-horror king",
+   "source": "chat attachment 2026-10-14 (gold regalia skeleton king + cat)",
+   "prompt": "Hyper-detailed folk-horror portrait: a skeleton king in gold-beaded regalia and sunburst crown holding a cat, storm-grey sky, swamp behind, baroque costume collage, one deep-red accent, no text.",
+   "motion": "storm drifts, beads glint, cat blinks"
+  },
+  {
+   "id": "NMD-04",
+   "kind": "image",
+   "title": "neon-line ensemble",
+   "source": "THE SCHEMA BECKONS source image",
+   "prompt": "Neon line-art ensemble portrait of hypnotized people with spiral glasses, hanging bulbs, hot-pink and cyan outlines on pure black, gig-poster style, no text.",
+   "motion": "bulbs flicker, spirals rotate, neon hum"
+  },
+  {
+   "id": "NMD-05",
+   "kind": "image",
+   "title": "decenturion terrain banner",
+   "source": "decenturion.jpg; decenturion-2-320.webp",
+   "prompt": "Black wireframe terrain mesh filling the frame, stark white geometric star emblem left of centre, deep space black, technical banner, no text.",
+   "motion": "mesh waves slowly, star breathes"
+  },
+  {
+   "id": "NMD-06",
+   "kind": "image",
+   "title": "particle-face",
+   "source": "exrqymv.pngidmock.png particle webp",
+   "prompt": "A human face formed entirely from white particles on black with thin network lines and nodes, point-cloud portrait, no text.",
+   "motion": "particles shimmer, nodes handshake, face dissolves and reforms"
+  },
+  {
+   "id": "NMD-07",
+   "kind": "layout",
+   "title": "hello-friend card",
+   "source": "idmock.png",
+   "prompt": "",
+   "layout": "dark card, red mark top, white question line, grey answer, hairline rule, year — all type ours"
+  },
+  {
+   "id": "NMD-08",
+   "kind": "layout",
+   "title": "french-meme slab",
+   "source": "chat attachment (Pierre layout)",
+   "prompt": "",
+   "layout": "stacked uppercase headline slabs white-on-dark, punchline paragraph, footnote bar with arrow, subject right-third duotone — type ours, satire always fiction-attributed"
+  },
+  {
+   "id": "NMD-09",
+   "kind": "archive",
+   "title": "in-code-we-trust text pieces",
+   "source": "schema-concepts webp/dalle batch 2023-2024",
+   "prompt": "archival: text always set by us over their art; extract art-only prompt per piece when regenerating",
+   "motion": ""
+  },
+  {
+   "id": "NMD-10",
+   "kind": "layout",
+   "title": "SCHEMA 2023 hero",
+   "source": "chat attachments — old landing heroes",
+   "prompt": "Full-body techwear figure in black jacket and cap (or grey hoodie, face shadowed) standing centred over an almost-black world-map engraving, studio rim light, ultra-dark editorial fashion photography, no text.",
+   "motion": "map drifts imperceptibly, rim light breathes, dust motes",
+   "layout": "centered SCHEMA year (white + red split), one grey sub-line, outlined button with mark chip"
+  },
+  {
+   "id": "NMD-11",
+   "kind": "image",
+   "title": "glyph-hood shrine",
+   "source": "chat attachment — dark hood + red triangle + tech-glyph wall",
+   "prompt": "Dark hooded operative, glowing crimson triangle emblem on the hood, background wall of faint red terminal glyphs and dashes on black, cold blue rim light, centered symmetrical composition, no text.",
+   "motion": "glyphs type themselves, triangle pulses, one glitch frame every 1.5 s"
+  },
+  {
+   "id": "NMD-12",
+   "kind": "image",
+   "title": "digital warrior portrait",
+   "source": "images/reference/portrait-display-vertical-artwork-digital-art-warrior-hd-wallpaper-preview.jpg",
+   "prompt": "Vertical digital-art warrior portrait: armored hooded fighter with crimson circuit accents and glowing red visor fragments, storm-black background, painterly concept-art finish, one red hue, no text.",
+   "motion": "visor flicker, embers rise, cloak drift"
+  },
+  {
+   "id": "BBS-01",
+   "kind": "image",
+   "title": "gradient-mega-glyphs",
+   "source": "bbs-ansi-0005.gif; bbs-ansi-0001.jpg",
+   "prompt": "Monumental abstract block-glyph towers built from ASCII shade characters - solid blocks, half blocks and dot-dither columns - rising out of pure black, deep crimson fading to cold magenta at the crown, faint cyan hairline bars along the sides, a visible character-cell grid, illegible shapes only, no readable words, no text, no logos.",
+   "motion": "dither columns cascade like a screen refresh, the crimson gradient breathes, the cyan bars flicker"
+  },
+  {
+   "id": "BBS-02",
+   "kind": "image",
+   "title": "character-panther-eyes",
+   "source": "bbs-ansi-0002.jpg",
+   "prompt": "A panther's face emerging from pure black, fur drawn from thousands of tiny block and hash characters on a visible character grid, two glowing crimson eyes as the only light source, charcoal and warm grey shading, a low skyline of dithered squares along the bottom edge, nothing readable - no text, no letters, no logos.",
+   "motion": "the eyes pulse, characters shimmer across the fur, skyline cells blink"
+  },
+  {
+   "id": "BBS-03",
+   "kind": "image",
+   "title": "chrome-banner-slabs",
+   "source": "bbs-ansi-0004.gif",
+   "prompt": "Flat 1994 ANSI banner art: two rows of colossal blocky letterform-shaped slabs (illegible, no readable words) filled with a vertical white-to-steel gradient and a crimson edge fringe, drawn in character cells on a pure black background, slight pixel stair-stepping, no 3D rendering, no plastic sheen, no grey backdrop, no text, no letters, no logos.",
+   "motion": "a specular sweep slides down the slabs, edge glow flickers, grain crawls"
+  },
+  {
+   "id": "BBS-04",
+   "kind": "image",
+   "title": "text-storm-band",
+   "source": "bbs-ansi-0004.gif",
+   "prompt": "A dense wallpaper band of tiny illegible monospaced rows made of dashes, short blocks and micro-dots that only suggest text, dim crimson and ash grey on pure black, uneven line lengths, some rows clipped by the edges, character grid texture, no letterforms, no readable words, no text, no logos.",
+   "motion": "rows drift slowly upward, random rows flicker bright then dim"
+  },
+  {
+   "id": "BBS-05",
+   "kind": "image",
+   "title": "onebit-hat-figure",
+   "source": "bbs-ansi-0004.jpg; bbs-ansi-0001.gif",
+   "prompt": "Pure one-bit pixel line art on black: a mysterious figure in a wide-brimmed hat with the face hidden under a smooth mask, drawn only in white single-pixel outlines with sparse grey dither for shadow, a long thin blade angled across the frame, heavy black negative space, retro terminal illustration, no text, no letters, no logos.",
+   "motion": "dither crawls along the shadow edges, the outline flickers one pixel, the black breathes"
+  },
+  {
+   "id": "BBS-06",
+   "kind": "image",
+   "title": "punk-sigil-portrait",
+   "source": "bbs-ansi-0003.gif",
+   "prompt": "Counterculture pixel portrait of a figure in a knit cap and dark wraparound shades, face in grey character dither, one crimson accent on the mouth and the shirt edge, an angular sigil inside a circle glowing crimson beside them, vertical dashed accent bars at the edge of the black frame, character-grid shading, no text, no letters, no logos.",
+   "motion": "the sigil pulses, dither shifts across the face, the accent bars blink"
+  },
+  {
+   "id": "BBS-07",
+   "kind": "image",
+   "title": "monochrome-terminal-poster",
+   "source": "bbs-ansi-0003.jpg",
+   "prompt": "Brutal monochrome terminal poster on pure black: two rows of colossal solid white block slabs with chunky pixel corners, thin white hairline rules stacked between them, a small neat block of tiny dashes and micro-dots centred below, character-cell texture, absolutely no letterforms or glyph characters anywhere, no text, no letters, no logos.",
+   "motion": "rules draw in from the left, slab edges alias-flicker, the micro rows type in then blur"
+  },
+  {
+   "id": "BBS-08",
+   "kind": "image",
+   "title": "crimson-phosphor-crt",
+   "source": "family - bbs-ansi-0001.jpg mono half + the CRT surface",
+   "prompt": "A black CRT screen photographed close, glowing in a single crimson phosphor hue: a grid of abstract solid and half blocks filling the frame, heavy bloom around every bright cell, fine horizontal scanlines across the whole screen, visible barrel curvature at the corners, vignette, screen grain and dust, illegible shapes only, no text, no letters, no logos.",
+   "motion": "scanlines roll, the bloom pulses, one horizontal tear jumps across"
+  },
+  {
+   "id": "LAY-03",
+   "kind": "layout",
+   "title": "bbs-welcome-dossier",
+   "source": "bbs-ansi-0001.jpg",
+   "prompt": "",
+   "layout": "art band top ~45% (BBS-01 / BBS-05), divider rail, centred mono dossier of 4-6 label+value rows (live tokens allowed), second rail, corner chips - all type ours, JetBrains Mono; never board/vendor names"
+  },
+  {
+   "id": "UIM-01",
+   "kind": "image",
+   "title": "dither-vortex",
+   "source": "menus/bandicam-2015-04-15-00-59-19-946-avi-20150415-011016-410.jpg",
+   "prompt": "A colossal concentric vortex of grey ordered-dither pixel rings receding into a black core, filling a pure black frame, coarse visible pixel grid, faint horizontal scanlines, monochrome graphite palette, slight CRT bloom, no text, no letters, no logos.",
+   "motion": "the vortex rotates almost imperceptibly, dither cells crawl along the rings, the core darkens and widens"
+  },
+  {
+   "id": "UIM-02",
+   "kind": "image",
+   "title": "pixel-city-glitch",
+   "source": "menus/bandicam-...-011017-513.jpg; menus/bandicam-...-011022-343.jpg",
+   "prompt": "An aerial city reduced to coarse grey pixel blocks dissolving on pure black, chunks tearing away into glitch shards, a few icy blue-white data fragments sparking along one edge, ordered-dither texture, monochrome with cold sparks only, no text, no letters, no logos.",
+   "motion": "blocks reassemble and tear again, the blue fragments stutter, dark pixels rain downward"
+  },
+  {
+   "id": "UIM-03",
+   "kind": "image",
+   "title": "tape-band-datamosh",
+   "source": "menus/bandicam-...-011022-843.jpg; menus/bandicam-...-011023-176.jpg",
+   "prompt": "Horizontal datamosh bands of displaced pixel noise stretching across pure black, tape-damage rows of plain rectangular grey and crimson blocks with no glyph shapes, one faint cyan fragment cluster at the top edge, heavy ordered dither, VHS data corruption texture, no letterforms, no numerals, no text, no logos.",
+   "motion": "bands slide sideways in stutter steps, rows flicker, noise re-rolls"
+  },
+  {
+   "id": "UIM-04",
+   "kind": "layout",
+   "title": "leader-menu-list",
+   "source": "menus/ - all 5 frames (the list itself)",
+   "prompt": "",
+   "layout": "left-column menu in the frame's left third: 5-8 rows right-aligned to a common edge, thin dotted leader rules between rows, the active row inverted as a solid off-white block with a black label, one dimmed disabled row above it, faint row plates, optional single caption line pinned at the bottom - all type ours, our words only; NEVER vendor items (the source lists a storefront and platform links)"
+  },
+  {
+   "id": "UIS-01",
+   "kind": "image",
+   "title": "ops-room-monitors",
+   "source": "screens/bandicam-...-011607-821.jpg; ...-011614-787.jpg; ...-011707-786.jpg",
+   "prompt": "Over-the-shoulder night shot of a hooded operator at a bank of dark monitors in a cluttered room, screens glowing with abstract grey data panels and wireframe graphs, paper notes clipped around the bezels, cold screen light on their shoulders, deep black shadows, 35mm film grain, screen content illegible, no text, no letters, no logos.",
+   "motion": "screen glow flickers, the operator shifts, dust drifts through the light"
+  },
+  {
+   "id": "UIS-02",
+   "kind": "image",
+   "title": "node-constellation",
+   "source": "screens/bandicam-...-011613-454.jpg; ...-011638-821.jpg; ...-011649-487.jpg",
+   "prompt": "A sparse constellation of thin wireframe polygons and glowing node dots floating over pure black, hairline connections drawing between them, one crimson alert triangle among cold grey nodes, dark HUD overlay aesthetic, no captions, no labels, no UI text of any kind, no text, no letters, no logos.",
+   "motion": "nodes handshake in sequence, lines redraw, the crimson triangle blinks and the mesh slowly drifts"
+  },
+  {
+   "id": "UIS-03",
+   "kind": "image",
+   "title": "terminal-panel-stack",
+   "source": "screens/bandicam-...-011619-654.jpg; ...-011652-087.jpg; ...-011658-753.jpg; screens/code.jpg",
+   "prompt": "Two translucent charcoal glass panels floating on pure black in slight perspective, their contents abstract: horizontal rows of plain grey dashes, dots and short rectangles like barcode stripes, one crimson status stripe along the top edge of each panel, glass reflections, scanlines, no characters, no numerals, no readable text anywhere, no letters, no logos.",
+   "motion": "rows refresh in waves, a window slides forward, the crimson stripe pulses"
+  },
+  {
+   "id": "UIS-04",
+   "kind": "image",
+   "title": "map-arc-trajectory",
+   "source": "screens/bandicam-...-011659-887.jpg .. ...-011701-487.jpg; screens/screens-0006.jpg",
+   "prompt": "A dark desaturated terrain map seen from a high orbital angle, thin luminous arcs leaping in parabolas between glowing node points, one crimson arc among pale grey ones, soft haze at the horizon, near-black ocean, no labels, no text, no letters, no logos.",
+   "motion": "arcs draw themselves and fade, nodes pulse, haze drifts"
+  },
+  {
+   "id": "UIS-05",
+   "kind": "image",
+   "title": "lcd-segment-counter",
+   "source": "screens/bandicam-...-011626-587.jpg; ...-011629-820.jpg; ...-011657-387.jpg",
+   "prompt": "Extreme macro photograph of a dark brushed-steel panel behind glass with three large glowing crimson rectangular light bars crossing the frame diagonally at random offsets, each bar clipped by a frame edge, crimson glow bleeding onto the glass, dust motes, deep black background, abstract geometric light composition, no characters, no numerals, no digits, no text, no letters, no logos.",
+   "motion": "segments flicker as if mid-count, the backlight breathes, glass catches a slow specular sweep"
+  },
+  {
+   "id": "UIS-06",
+   "kind": "image",
+   "title": "boot-ring-particles",
+   "source": "screens/screens-0009.png .. screens-0015.png",
+   "prompt": "A ring of white particles and short dashes assembling into a perfect circle on pure black, faint cold glow behind the ring, one crimson spark orbiting it, vast empty space around, minimal boot-screen composition, no text, no letters, no logos.",
+   "motion": "particles lock into the ring, the glow swells once, the crimson spark completes an orbit"
+  },
+  {
+   "id": "UIS-07",
+   "kind": "image",
+   "title": "code-wall-texture",
+   "source": "screens/code.jpg; screens/screens-0016.jpg; screens/screens-0017.jpg",
+   "prompt": "A near-black wallpaper of thousands of tiny defocused grey light specks arranged in loose vertical columns on black, like a distant LED wall seen far out of focus, soft bloom, no discernible shapes or characters, even coverage, no numerals, no readable text, no letters, no logos.",
+   "motion": "glyph clusters shimmer faintly, patches drift in and out of darkness"
+  },
+  {
+   "id": "UIS-08",
+   "kind": "image",
+   "title": "strip-noise-texture",
+   "source": "screens/lines-strips-black-background-174152.jpg; screens/black-pixel-bg.jpg",
+   "prompt": "Horizontal bands of clearly visible fine grey streak noise on pure black, like tape damage across a dead screen, uneven band density, ordered dither, low-key but distinct under type, no text, no letters, no logos.",
+   "motion": "streaks crawl sideways, bands flicker bright then settle"
+  },
+  {
+   "id": "UIS-09",
+   "kind": "layout",
+   "title": "dossier-card",
+   "source": "screens/bandicam-...-011752-153.jpg; ...-011755-453.jpg; ...-011803-253.jpg",
+   "prompt": "",
+   "layout": "dossier card: b/w portrait tile on the left (any portrait subject), name slab + 4-6 label/value rows on the right, hairline steel frame, tiny corner chips, optional thin connector lines to smaller satellite cards - all type ours, rows carry live tokens; never real personal data, never the source's character names"
+  },
+  {
+   "id": "UIS-10",
+   "kind": "layout",
+   "title": "phone-inbox-mock",
+   "source": "screens/bandicam-...-011738-886.jpg .. ...-011747-186.jpg",
+   "prompt": "",
+   "layout": "flat phone panel mock: top bar with a hamburger glyph and short title, search row under it, stacked list cards each with a square avatar and two text lines, one card carrying a crimson unread badge - all type ours; no app-brand marks, no real names"
+  },
+  {
+   "id": "UIS-11",
+   "kind": "layout",
+   "title": "transfer-banner",
+   "source": "screens/bandicam-...-011748-619.jpg; ...-011750-920.jpg",
+   "prompt": "",
+   "layout": "full-width transfer banner: bold status word on the left, thick diagonal-stripe progress bar under it (crimson stripes on dark while running, solid off-white when complete), small corner labels - all type ours"
+  },
+  {
+   "id": "UIS-12",
+   "kind": "layout",
+   "title": "profiler-callout",
+   "source": "screens/bandicam-...-011620-587.jpg; ...-011638-821.jpg",
+   "prompt": "",
+   "layout": "angular targeting brackets around a subject with a short leader line to a small label plate beside it, tiny corner ticks - the plate's copy ours, brackets in off-white with one crimson tick; brackets never cover the subject's centre"
+  },
+  {
+   "id": "UIS-13",
+   "kind": "layout",
+   "title": "retro-boot-screen",
+   "source": "screens/ui-screen-0001.jpg; screens/ui-screen-0023.png; screens/ui-screen-0017.png",
+   "prompt": "",
+   "layout": "retro boot/error screen: left column of monospace POST lines (path | status pairs), blank line, two-line SYSTEM close, optional centred dialog box with a double border (crimson outline or fill) - all copy ours, JetBrains Mono; never vendor, BIOS or firmware names"
+  },
+  {
+   "id": "UIS-14",
+   "kind": "layout",
+   "title": "wire-log-terminal",
+   "source": "screens/screens-0001.jpg; screens/screens-0008.png",
+   "prompt": "",
+   "layout": "terminal conversation log: left timestamp column, middle nick column, message column right, older rows dimmed, one crimson line for the active speaker - all copy ours (the Wire / Courier / PING), monospace"
+  },
+  {
+   "id": "UIS-15",
+   "kind": "layout",
+   "title": "dense-ops-table",
+   "source": "screens/capture.png; screens/screens-0001.png; screens/screens-0016.png; screens/screens-0020.png",
+   "prompt": "",
+   "layout": "desktop operations screen: top nav rail with tab chips and a search field, left filter column, dense zebra table with small status flags in one column and a figures column, bottom status bar - all type ours"
+  },
+  {
+   "id": "UIS-16",
+   "kind": "layout",
+   "title": "three-pane-inbox",
+   "source": "screens/screens-0030.jpg; screens/screens-0031.jpg",
+   "prompt": "",
+   "layout": "three-pane inbox: left folder rail with counts, centre message list grouped by day (unread rows bold), right reading pane with a header block and hairline dividers - all type ours"
+  },
+  {
+   "id": "UIS-17",
+   "kind": "layout",
+   "title": "flat-login-gate",
+   "source": "screens/chromeos-0.png; screens/chromium-login1.jpg",
+   "prompt": "",
+   "layout": "full-bleed flat colour field, centred wordmark in the upper third, two stacked input fields with labels above them, tiny version line at the bottom - all type ours; field colour = ink or crimson, never the source's blue"
+  },
+  {
+   "id": "UIS-18",
+   "kind": "archive",
+   "title": "legacy-capture-archive",
+   "source": "screens/ - snap-*.png, avtobus.jpg, belyj-dom-1.jpg, capture*.png, ui-screen-0006/0008-0013, meme cards, paper/wood/linen textures",
+   "prompt": "archival: reviewed and NOT extracted as standing templates - vendor branding, off-palette or one-shot period mock material; mine a single piece per-video if a shot ever needs the era, never as a standing style",
+   "motion": ""
+  },
+  {
+   "id": "WD-01",
+   "kind": "image",
+   "title": "Command-HUD panel",
+   "source": ".lab/reference/refs/style/2026-10-14-watch-dogs-ctos-command-hud.md",
+   "prompt": "Dense heads-up dashboard floating over a dark charcoal city map, cyan-on-black; left rail of chamfered tiles with line icons; center node-graph wiring three label chips (UNREAD, SIGNAL, NETWORK) to diamond anchors with 1px connector lines; right column of waveform bars and a segmented progress ring; small plus-marks at grid intersections; one alert chip in signal red; monospaced uppercase micro-labels on a strict baseline grid. surveillance-command-HUD aesthetic, pure black background, single accent (Schema: water-teal surfaces / #D63A32 alerts; cyan only as rare spark), white uppercase monospaced labels with wide letter-spacing, chamfered octagonal tiles and rotated-diamond markers, hair-thin connector lines with small square anchors, 45-degree diagonal hairline hatch at low opacity, corner bracket framing, subtle scanlines, crisp 1px vector UI over cinematic haze, premium tech-noir, no photorealistic logos, no brand names, no text, 16:9",
+   "motion": "chips blink in sequence, wires draw on, ring segments fill"
+  },
+  {
+   "id": "WD-02",
+   "kind": "image",
+   "title": "ASCII reveal title",
+   "source": ".lab/reference/refs/style/2026-10-14-watch-dogs-ctos-command-hud.md",
+   "prompt": "Full-frame falling ASCII glyph rain, a large geometric emblem carved out of the field as pure-black negative space, glyph edges breaking into horizontal glitch slices at the boundary, cathode-ray glow, 16:9. surveillance-command-HUD aesthetic, pure black background, single accent (Schema: water-teal surfaces / #D63A32 alerts; cyan only as rare spark), white uppercase monospaced labels with wide letter-spacing, chamfered octagonal tiles and rotated-diamond markers, hair-thin connector lines with small square anchors, 45-degree diagonal hairline hatch at low opacity, corner bracket framing, subtle scanlines, crisp 1px vector UI over cinematic haze, premium tech-noir, no photorealistic logos, no brand names, no text, 16:9",
+   "motion": "rain falls, glyph shear glitch every 1.5 s, emblem breathes"
+  },
+  {
+   "id": "WD-03",
+   "kind": "image",
+   "title": "Profiler scene",
+   "source": ".lab/reference/refs/style/2026-10-14-watch-dogs-ctos-command-hud.md",
+   "prompt": "Night city street, shallow depth of field, a hooded citizen seen from behind holding a phone, hair-thin white lines radiating from the phone to three objects across the scene, a red diamond reticle with a small label chip hovering over one figure, faint hex-code particles, wet asphalt reflections, desaturated grade, film grain, tech-noir mood. surveillance-command-HUD aesthetic, pure black background, single accent (Schema: water-teal surfaces / #D63A32 alerts; cyan only as rare spark), white uppercase monospaced labels with wide letter-spacing, chamfered octagonal tiles and rotated-diamond markers, hair-thin connector lines with small square anchors, 45-degree diagonal hairline hatch at low opacity, corner bracket framing, subtle scanlines, crisp 1px vector UI over cinematic haze, premium tech-noir, no photorealistic logos, no brand names, no text, 16:9",
+   "motion": "lines trace out, reticle locks, hex particles drift"
+  },
+  {
+   "id": "WD-04",
+   "kind": "image",
+   "title": "In-hand device promo",
+   "source": ".lab/reference/refs/style/2026-10-14-watch-dogs-ctos-command-hud.md",
+   "prompt": "A hand holding a matte-black phone against a blurred bokeh city at dusk, the phone screen glowing with a dark radial dial UI (chamfered tiles around a dashed circle, one active button), bracket tick marks and leader lines annotating screen elements, near-black background, rim light on the phone edge, 16:9. surveillance-command-HUD aesthetic, pure black background, single accent (Schema: water-teal surfaces / #D63A32 alerts; cyan only as rare spark), white uppercase monospaced labels with wide letter-spacing, chamfered octagonal tiles and rotated-diamond markers, hair-thin connector lines with small square anchors, 45-degree diagonal hairline hatch at low opacity, corner bracket framing, subtle scanlines, crisp 1px vector UI over cinematic haze, premium tech-noir, no photorealistic logos, no brand names, no text, 16:9",
+   "motion": "dial rotates, screen UI cycles, bokeh shifts"
+  },
+  {
+   "id": "WD-05",
+   "kind": "image",
+   "title": "Wired node diagram",
+   "source": ".lab/reference/refs/style/2026-10-14-watch-dogs-ctos-command-hud.md",
+   "prompt": "Minimal information graphic on textured near-black: 4-5 content cards connected by thin gray wires to plus-sign and square anchor nodes, each card topped by an uppercase label bar with wide tracking, one card highlighted with a glow border, small chevron clusters in negative space, vector-crisp, no readable brand text, 16:9. surveillance-command-HUD aesthetic, pure black background, single accent (Schema: water-teal surfaces / #D63A32 alerts; cyan only as rare spark), white uppercase monospaced labels with wide letter-spacing, chamfered octagonal tiles and rotated-diamond markers, hair-thin connector lines with small square anchors, 45-degree diagonal hairline hatch at low opacity, corner bracket framing, subtle scanlines, crisp 1px vector UI over cinematic haze, premium tech-noir, no photorealistic logos, no brand names, no text, 16:9",
+   "motion": "wires draw, the highlighted card pulses"
+  },
+  {
+   "id": "WD-06",
+   "kind": "image",
+   "title": "World map hotspots",
+   "source": ".lab/reference/refs/style/2026-10-14-watch-dogs-ctos-command-hud.md",
+   "prompt": "Top-down grayscale city street map, near-monochrome dark blocks and roads, a few glowing circular hotspots and one diamond marker with a short label chip, subtle vignette, HUD corner brackets at frame edges, flat vector cartography with slight paper-grain. surveillance-command-HUD aesthetic, pure black background, single accent (Schema: water-teal surfaces / #D63A32 alerts; cyan only as rare spark), white uppercase monospaced labels with wide letter-spacing, chamfered octagonal tiles and rotated-diamond markers, hair-thin connector lines with small square anchors, 45-degree diagonal hairline hatch at low opacity, corner bracket framing, subtle scanlines, crisp 1px vector UI over cinematic haze, premium tech-noir, no photorealistic logos, no brand names, no text, 16:9",
+   "motion": "hotspots ping, marker glides, vignette breathes"
+  },
+  {
+   "id": "BBS-S01",
+   "kind": "image",
+   "title": "gradient-mega-glyphs (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "Monumental abstract block-glyph towers built from ASCII shade characters - solid blocks, half blocks, dot-dither columns - rising like a zone skyline, crimson fading to cold magenta at the crown, tiny crimson node lights glowing along the tower faces, faint cyan hairline bars at the sides; at the base a small dark metal plaque carrying the SAME crimson brush emblem from the input image. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "dither columns cascade like a screen refresh, the crimson gradient breathes, the cyan bars flicker"
+  },
+  {
+   "id": "BBS-S02",
+   "kind": "image",
+   "title": "character-panther-eyes (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "A world coastline drawn entirely from tiny block and hash characters, glowing crimson node flares scattered across it like claimed cities, dark ocean of dot dither, faint coordinate grid over the whole map, one dense cluster of flares where a capital would be; a small painted crimson brush emblem from the input image sits in a corner like a cartographer's seal. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "the eyes pulse, characters shimmer across the fur, skyline cells blink"
+  },
+  {
+   "id": "BBS-S03",
+   "kind": "image",
+   "title": "chrome-banner-slabs (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "Flat 1994 ANSI banner art on pure black: one wide horizontal row of four colossal blocky slab shapes, white-to-steel vertical gradient, crimson edge fringe, pixel stair-stepping, character-cell grain; the SAME crimson brush emblem from the input image is painted across the centre slabs, large and part of the banner. No windows, no frames, no 3D, illegible shapes only. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "a specular sweep slides down the slabs, edge glow flickers, grain crawls"
+  },
+  {
+   "id": "BBS-S04",
+   "kind": "image",
+   "title": "text-storm-band (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "A dense field of tiny illegible monospaced rows of dashes and micro-dots, dim crimson and ash grey on black, visible character grid; the SAME crimson brush emblem from the input image appears as if one row of the data stream drew it out of the same tiny marks - part of the texture, not a sticker on top. Nothing readable. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "rows drift slowly upward, random rows flicker bright then dim"
+  },
+  {
+   "id": "BBS-S05",
+   "kind": "image",
+   "title": "onebit-hat-figure (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "Pure one-bit pixel line art on black: a lone tall figure in a wide-brimmed hat and smooth mask, white single-pixel outlines only, standing full height before a wall of faint grey character cells; the SAME crimson brush emblem from the input image is painted on that wall behind them at head height, small. Adult proportions, heavy black negative space. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "dither crawls along the shadow edges, the outline flickers one pixel, the black breathes"
+  },
+  {
+   "id": "BBS-S06",
+   "kind": "image",
+   "title": "punk-sigil-portrait (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "An ANSI character portrait: a citizen of a rain-soaked city from the chest up, knit cap, face in grey character dither, one crimson accent on the lip; behind them a wall of faint red terminal glyph texture and falling rain lines; the SAME crimson brush emblem from the input image is pinned on their chest like a seal. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "the sigil pulses, dither shifts across the face, the accent bars blink"
+  },
+  {
+   "id": "BBS-S07",
+   "kind": "image",
+   "title": "monochrome-terminal-poster (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "Brutal monochrome terminal poster on pure black: two long rows of solid white block slabs with chunky pixel corners spanning the full width, thin white hairline rules between the rows, a neat block of tiny dashes and micro-dots at the bottom; the SAME crimson brush emblem from the input image is pressed large across the centre where the rules meet, the only colour. No windows, no frames, no letterforms. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "rules draw in from the left, slab edges alias-flicker, the micro rows type in then blur"
+  },
+  {
+   "id": "BBS-S08",
+   "kind": "image",
+   "title": "crimson-phosphor-crt (schema retheme)",
+   "source": ".tmp/bbs_schema.py scene 2026-10-14; mark baked in via logo_bake/flux-kontext-dev, never composited",
+   "prompt": "A black CRT screen photographed close, glowing single-hue crimson phosphor: a grid of abstract solid and half blocks filling the frame, heavy bloom around every bright cell, fine horizontal scanlines, barrel curvature at the corners, vignette and screen grain; the SAME crimson brush emblem from the input image glows at the centre of the screen as if the terminal itself is displaying it. Authentic 1994 dial-up BBS ANSI art on a pure black CRT, visible character-cell grid, restrained palette, crimson as the only saturated hue. Illegible shapes only: NO readable words, NO letters, NO numbers, NO watermark.",
+   "motion": "scanlines roll, the bloom pulses, one horizontal tear jumps across"
+  }
+ ]
+}

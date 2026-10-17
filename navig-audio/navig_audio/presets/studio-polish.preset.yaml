@@ -1,0 +1,15 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/studio-polish
+name: Studio Polish
+tool: audio.enhance
+layer: config
+category: Polish
+description: Measured fixes, a gentle move toward a balanced tone, light compression where the material
+  suits it, and loudness for its category.
+tags:
+- enhance
+- studio
+params:
+  mode: studio

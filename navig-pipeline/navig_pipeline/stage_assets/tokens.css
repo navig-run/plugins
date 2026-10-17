@@ -1,0 +1,47 @@
+/* GENERATED from packages/shared/navig-tokens/index.css (:root block) — do not edit.
+   Regenerate: py -3.13 -m navig_pipeline.stage --sync-tokens ; drift is a test failure. */
+:root {
+  /* Surface colors — Deep Netflix Dark */
+  --background: #050505;
+  --foreground: #f5f5f5;
+  /* card variant: #0e2535 (hue-matched dark) · card-fg #f5f5f5 → 16.7:1 AAA */
+  --card: #0e2535;
+  --card-foreground: #f5f5f5;
+  --popover: #0a0a0a;
+  --popover-foreground: #f5f5f5;
+  /* Primary — Denser Azure #2C8BB7 for white-text legibility */
+  --primary: #2C8BB7;
+  --primary-foreground: #071017;
+  /* Secondary — Deep Charcoal */
+  --secondary: #141414;
+  --secondary-foreground: #f5f5f5;
+  /* Muted — Zinc */
+  --muted: #1e1e1e;
+  --muted-foreground: #a1a1aa;
+  /* Accent — #22d3ee CTAs/active; dark ink 11.17:1 AA on #22d3ee */
+  --accent: #22d3ee;
+  --accent-foreground: #071017;
+  /* Destructive */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  /* Borders & inputs */
+  --border: #262626;
+  --input: #141414;
+  --ring: #22d3ee;
+  --radius: 0.25rem;
+  /* Charts — primary-anchored palette */
+  --chart-1: #2C8BB7;
+  --chart-2: #2563eb;
+  --chart-3: #1d4ed8;
+  --chart-4: #1e40af;
+  --chart-5: #1e3a8a;
+  /* Sidebar */
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #2C8BB7;
+  --sidebar-primary-foreground: #071017;
+  --sidebar-accent: #141414;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #1a1a1a;
+  --sidebar-ring: #22d3ee;
+}

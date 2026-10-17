@@ -1,0 +1,9 @@
+{"version": 2, "width": 44, "height": 40, "timestamp": 1791635520, "title": "rm -rf", "command": "wsl -e bash -lc source /mnt/e/projects/apps/navig/core/tools/showcase/sandbox.sh >/dev/null 2>&1; export COLUMNS=44; cd \"$HOME_DEMO_WORK\"; navig host use prod-01 >/dev/null 2>&1; navig run uptime >/dev/null 2>&1 </dev/null; navig run 'rm -rf /var/www' </dev/null", "env": {"TERM": "xterm-256color", "SHELL": "navig"}, "navig": {"exit": 1, "redactions": 6, "backend": "conpty"}}
+[0.009746, "o", "\u001b[1t\u001b[c\u001b[?1004h\u001b[?9001h"]
+[4.628798, "o", "\r\n"]
+[4.640216, "o", "\u001b[31m⚠ Confirm DESTRUCTIVE operation:\u001b[0m\r\n"]
+[4.641628, "o", "  \u001b[1mRun: rm -rf \u001b[0m\u001b[1;35m/var/\u001b[0m\u001b[1;95mwww\u001b[0m\r\n"]
+[4.643219, "o", "  \u001b[2mHost:\u001b[0m \u001b[36mprod-\u001b[0m\u001b[1;36m01\u001b[0m\r\n"]
+[4.644838, "o", "\r\n"]
+[4.647997, "o", "\u001b[36mAre you sure you want to proceed?\u001b[0m \u001b[1;35m[y/n]\u001b[0m \u001b[1;36m(n)\u001b[0m:\r\n"]
+[4.696557, "o", "\u001b[31mAborted.\u001b[0m\r\n"]

@@ -1,0 +1,15 @@
+# Routine informational confirmation — "yes, received" to a simple, unambiguous check.
+id: routine-confirmation
+title: Routine informational confirmation
+action: send
+category: confirmation
+senders: ["*"]
+require_auth: true
+confidence: 0.85
+delay: 15m
+limits: { per_thread: 1, sender_cooldown: 24h, daily: 20 }
+style: brief
+say: >-
+  Confirm, in one or two sentences, that the message or document was received. Nothing else.
+review_words: []
+notify: true

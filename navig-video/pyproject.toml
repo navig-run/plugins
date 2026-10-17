@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-video"
+version = "0.3.0"
+description = "NAVIG Video module — render a channel's video formats (kinetic episodes, bulletins, motion cards) from its workspace of texts, plates and voice: timeline → frames → ffmpeg, with per-destination encode variants. A first-party navig plugin (free, toggleable)."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "automation", "plugin", "video", "render", "ffmpeg", "kinetic"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Multimedia :: Video",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Standalone-safe: renders go through navig-sdk + ffmpeg on PATH (probed at runtime,
+# never a pip dep), voice comes from navig-audio and stills from navig-generate — imported
+# lazily by the verbs that need them, so `navig-video --help` and `status`/`doctor` run on a
+# bare install. navig-media-core (light: navig-sdk only) is a base dependency because
+# `parity` measures loudness with its shared meter (ADR-0002).
+dependencies = ["navig-sdk>=2.14.0", "navig-media-core>=0.2.0", "typer>=0.14.0", "rich>=13.7.0"]
+
+[project.optional-dependencies]
+# The engines a real render pulls in: voice/beat from navig-audio, the shared media
+# engine (from_frames/mix/probe) from navig-media-core, generator clients from
+# navig-generate.
+render = ["navig-audio>=0.5.1", "navig-media-core>=0.2.0", "navig-generate>=0.2.0", "Pillow>=10.0", "numpy>=1.24"]
+
+# Its own command: `navig video` inside navig, `navig-video` on its own.
+[project.scripts]
+navig-video = "navig_video.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot.
+[project.entry-points."navig.plugins"]
+video = "navig_video.plugin"
+
+# `navig video` — discovered by navig.cli.registration._entry_point_commands().
+# The name `video` is free in core's _EXTERNAL_CMD_MAP (built-ins win the race;
+# `media`/`generate` are taken, `video` is not).
+[project.entry-points."navig.commands"]
+video = "navig_video.commands.video:video_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_video*"]
+
+[tool.setuptools.package-data]
+navig_video = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-video`, no navig needed) AND as `navig video` inside navig.
+mode = "standalone"

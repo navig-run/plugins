@@ -1,0 +1,20 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/music-mastering
+name: Music Mastering
+tool: audio.enhance
+layer: config
+category: Polish
+description: 'Music: gentle tonal balance, light bus compression, -14 LUFS with a -1 dBTP ceiling.'
+tags:
+- enhance
+- studio
+params:
+  mode: studio
+  category: music
+  eq: gentle
+  compress: gentle
+  denoise: 'off'
+  target_lufs: -14.0
+  true_peak_db: -1.0

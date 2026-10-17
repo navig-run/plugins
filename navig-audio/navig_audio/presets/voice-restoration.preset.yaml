@@ -1,0 +1,22 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/voice-restoration
+name: Voice Restoration
+tool: audio.enhance
+layer: config
+category: Polish
+description: 'Speech: noise and hum reduction, de-click, gentle tone, light compression, -16 LUFS.'
+tags:
+- enhance
+- studio
+params:
+  mode: studio
+  category: speech
+  denoise: auto
+  dehum: auto
+  declick: true
+  eq: adaptive
+  compress: gentle
+  target_lufs: -16.0
+  true_peak_db: -1.0

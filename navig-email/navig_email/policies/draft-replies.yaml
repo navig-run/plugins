@@ -1,0 +1,14 @@
+# Drafts only — write a reply for every matching message and leave it for you. Never sends.
+id: draft-replies
+title: Draft replies (never sends)
+action: draft
+category: any
+senders: ["*"]
+require_auth: false
+confidence: 0.0
+delay: 0m
+limits: { per_thread: 1, sender_cooldown: 0m, daily: 50 }
+style: plain
+say: ""
+review_words: []
+notify: true

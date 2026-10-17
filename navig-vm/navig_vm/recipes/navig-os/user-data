@@ -1,0 +1,52 @@
+#cloud-config
+# NAVIG OS lab machine — `navig vm create <name> --recipe navig-os --repo <signed repo>`.
+# Debian 13 + GNOME (for the desktop session) + the NAVIG OS packages from the signed
+# repository the host shares into the VM. After it reboots, the login screen offers two
+# sessions: "NAVIG OS" (full screen, as navig-kiosk) and GNOME (as ${owner}).
+hostname: ${hostname}
+# Not the `keyboard:` module: on the Debian cloud image it fails (no
+# keyboard-configuration tooling yet). This file is what GDM, GNOME and the
+# console read.
+write_files:
+  - path: /etc/default/keyboard
+    content: |
+      XKBMODEL="pc105"
+      XKBLAYOUT="${keyboard}"
+      XKBVARIANT=""
+      XKBOPTIONS=""
+      BACKSPACE="guess"
+users:
+  - name: ${owner}
+    gecos: NAVIG OS owner
+    groups: [sudo]
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: "${password_hash}"
+    ssh_authorized_keys:
+      - ${ssh_key}
+ssh_pwauth: false
+package_update: true
+packages:
+  - open-vm-tools
+  - open-vm-tools-desktop
+  - fuse3
+  - gnome-core
+  - gdm3
+# No `mounts:` module: it runs before `packages`, when vmhgfs-fuse does not exist yet, and
+# fails. The fstab line is written here instead, once open-vm-tools is installed, so the
+# repository is mounted on every boot and `apt upgrade` keeps working.
+runcmd:
+  - [mkdir, -p, /mnt/navig-repo, /var/lib/navig-vm]
+  - [sh, -c, "grep -q ' /mnt/navig-repo ' /etc/fstab || echo '.host:/${repo_name} /mnt/navig-repo fuse.vmhgfs-fuse defaults,allow_other,nofail 0 0' >> /etc/fstab"]
+  - [sh, -c, "mountpoint -q /mnt/navig-repo || mount /mnt/navig-repo"]
+  # The same installer an existing Debian machine uses: key + repo + packages + units.
+  - [sh, /mnt/navig-repo/install.sh, --repo, "file:/mnt/navig-repo", --key, /mnt/navig-repo/navig-archive-keyring.gpg, --owner, "${owner}"]
+  # Lab only: let GDM admit the password-locked kiosk account through nopasswdlogin, if
+  # this GDM's PAM stack does not already (the packages never edit another package's PAM).
+  - [sh, -c, "grep -q nopasswdlogin /etc/pam.d/gdm-password || sed -i '/^@include common-auth/i auth sufficient pam_succeed_if.so user ingroup nopasswdlogin' /etc/pam.d/gdm-password"]
+  - [systemctl, set-default, graphical.target]
+  - [touch, /var/lib/navig-vm/provisioned]
+power_state:
+  mode: reboot
+  message: "NAVIG OS lab provisioned; rebooting into the login screen"
+  condition: true

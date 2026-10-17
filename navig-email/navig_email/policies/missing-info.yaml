@@ -1,0 +1,18 @@
+# Missing information request — ask for clearly named, non-sensitive details only.
+id: missing-info
+title: Missing information request
+action: send
+category: business_inquiry
+senders: ["*"]
+require_auth: true
+confidence: 0.8
+delay: 15m
+limits: { per_thread: 1, sender_cooldown: 72h, daily: 10 }
+style: brief
+# Details this policy may ask for. Only the ones the message does not already contain are asked.
+required_details: [project scope, desired timeline, company website]
+say: >-
+  Thank them and ask, in one short list, for the missing details named below. Never ask for
+  passwords, payment or bank details, identity documents, or anything personal.
+review_words: []
+notify: true

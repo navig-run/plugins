@@ -1,0 +1,23 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/cassette
+name: Cassette Tape
+tool: audio.enhance
+layer: config
+category: Restoration — old media
+description: 'Tape transfers: steady hiss reduced, motor rumble and hum removed, tone gently
+  evened out. The tape''s own character (wow, saturation) is left alone.'
+tags:
+- enhance
+- restoration
+- cassette
+params:
+  mode: studio
+  denoise: auto
+  dehum: auto
+  declick: false
+  highpass_hz: 30
+  eq: gentle
+  compress: 'off'
+  trim_silence: true

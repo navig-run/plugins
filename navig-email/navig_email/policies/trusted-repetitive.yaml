@@ -1,0 +1,16 @@
+# Trusted repetitive correspondence — named senders only, user-approved facts only.
+id: trusted-repetitive
+title: Trusted repetitive correspondence
+action: send
+category: any
+senders: []               # MUST be filled with exact addresses or domains when enabled ("*" refused)
+require_auth: true
+confidence: 0.6
+delay: 15m
+limits: { per_thread: 3, sender_cooldown: 4h, daily: 20 }
+style: plain
+facts: []                 # the only facts the reply may state (strings)
+say: >-
+  Reply using only the facts listed. If the message needs anything else, say a person will follow up.
+review_words: []
+notify: true

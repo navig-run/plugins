@@ -1,0 +1,196 @@
+# Built-in beat styles for `navig audio beat`.
+#
+# Generic genres only — a project's house sound lives in its own file, passed with
+# `--styles`, where a style may `extends:` one of these and add to it
+# (`positive_add`, `negative_add`, `sections_add`) instead of copying it.
+#
+# Fields: label · family · language (who raps on it: en/ru/fr/…) · bpm · bpm_range · key
+# · positive (global styles) · negative (global, "never") · sections (per-section adds)
+# · structure ("name:bars,…" — every section's length is computed from bars × bpm)
+# · notes (for humans).
+#
+# Every render also gets "instrumental" + a no-vocals negative appended automatically.
+
+styles:
+  boom-bap-dark:
+    label: Dark slow boom bap
+    family: boom-bap
+    language: en
+    bpm: 78
+    bpm_range: [70, 92]
+    key: E minor
+    positive:
+      - dark slow boom bap hip-hop beat
+      - sub-heavy 808 bass tuned to the root, huge low end
+      - dusty muffled minor sample under a low-pass filter
+      - hard swung drums, cracking snare, soft swung hi-hats
+      - vinyl crackle, tape saturation, lo-fi
+      - sparse arrangement with space for a rap voice
+    negative:
+      - cinematic
+      - epic
+      - orchestral
+      - trailer music
+      - polished glossy pop mix
+      - EDM drop
+      - bright synth lead
+    sections:
+      intro: [filtered sample alone, no drums, tape hiss, rising anticipation]
+      verse: [full drums and 808, sample muted low, minimal, steady head-nod]
+      hook: [one extra filtered vocal-chop stab as the motif, sample opens up, denser]
+      breakdown: [drums drop out, sub and sample only, tension]
+      outro: [drums stop, sample fades under filter, tape stop]
+    structure: intro:4,verse:16,hook:8,verse:16,hook:8,breakdown:4,outro:4
+    notes: The classic type-beat shape; hook arrives under 15 seconds.
+
+  boom-bap-classic:
+    label: Classic 90s boom bap
+    family: boom-bap
+    language: en
+    bpm: 90
+    bpm_range: [84, 96]
+    key: A minor
+    positive:
+      - classic 90s East Coast boom bap
+      - chopped jazz piano and upright bass sample
+      - punchy dusty drum break, snare on 2 and 4
+      - vinyl crackle, warm and raw
+      - room for a rapper
+    negative: [cinematic, epic, orchestral, modern trap hi-hats, polished pop mix, EDM]
+    sections:
+      intro: [sample loop alone with crackle]
+      verse: [drums in, bass walks, sample chopped tight]
+      hook: [horn stab or scratched vocal sample as the motif]
+      breakdown: [drums out, bass and sample]
+      outro: [loop fades with crackle]
+    structure: intro:4,verse:16,hook:8,verse:16,hook:8,breakdown:4,outro:4
+
+  phonk-halftime:
+    label: Dark phonk halftime
+    family: phonk
+    language: ru
+    bpm: 140
+    bpm_range: [130, 150]
+    key: D minor
+    positive:
+      - dark phonk instrumental, halftime drums
+      - heavy distorted 808 bass with slides
+      - detuned cowbell melody, memphis-style chopped sample
+      - tape hiss, lo-fi, night-drive paranoia
+      - hypnotic and heavy, space for a voice
+    negative: [cinematic, epic, orchestral, happy, bright, EDM festival drop, clean pop mix]
+    sections:
+      intro: [sample and hiss, no drums]
+      verse: [halftime kick and snare, 808 slides, sparse]
+      hook: [cowbell motif enters, 808 doubles, denser]
+      breakdown: [everything cuts to the 808 alone]
+      outro: [tape stop]
+    structure: intro:4,verse:16,hook:8,verse:16,hook:8,breakdown:4,outro:4
+    notes: 140 written, felt at 70 — halftime.
+
+  drill-uk:
+    label: UK drill
+    family: drill
+    language: en
+    bpm: 142
+    bpm_range: [138, 146]
+    key: F minor
+    positive:
+      - UK drill instrumental
+      - sliding 808 bass with glides, hard-hitting
+      - fast triplet hi-hat rolls, sparse snare on the 3
+      - dark piano or bell melody, cold and minimal
+      - space for a rapper
+    negative: [cinematic, epic, orchestral, bright, happy, EDM, pop]
+    sections:
+      intro: [melody alone, cold]
+      verse: [full drill drums and 808 slides]
+      hook: [melody doubles, extra bell motif]
+      breakdown: [drums out, 808 and melody]
+      outro: [melody fades]
+    structure: intro:4,verse:16,hook:8,verse:16,hook:8,breakdown:4,outro:4
+
+  trap-dark:
+    label: Dark trap
+    family: trap
+    language: en
+    bpm: 150
+    bpm_range: [130, 160]
+    key: C minor
+    positive:
+      - dark trap instrumental, halftime feel
+      - booming 808, rolling hi-hats, hard snare
+      - eerie minor bell or flute melody
+      - sparse and menacing, room for a rapper
+    negative: [cinematic, epic, orchestral, bright, pop, EDM drop]
+    sections:
+      intro: [melody alone with reverse cymbal]
+      verse: [808 and hi-hats in, sparse]
+      hook: [melody doubles with an extra layer, denser hats]
+      breakdown: [808 alone]
+      outro: [melody fades]
+    structure: intro:4,verse:16,hook:8,verse:16,hook:8,breakdown:4,outro:4
+
+  lofi-jazz-hop:
+    label: Lo-fi jazz hop
+    family: lo-fi
+    language: en
+    bpm: 82
+    bpm_range: [70, 90]
+    key: F major
+    positive:
+      - lo-fi jazz hop instrumental
+      - warm Rhodes chords, soft upright bass
+      - dusty laid-back drums, vinyl crackle, tape wobble
+      - mellow, nostalgic, space for a calm voice
+    negative: [cinematic, epic, orchestral, aggressive, EDM, loud pop mix]
+    sections:
+      intro: [Rhodes alone with crackle]
+      verse: [drums and bass in, steady]
+      hook: [a short melodic phrase repeats as the motif]
+      breakdown: [drums out, chords and rain]
+      outro: [chords fade under tape]
+    structure: intro:4,verse:16,hook:8,verse:16,hook:8,breakdown:4,outro:4
+
+  punk-rap-electro:
+    label: Punk-rap electro
+    family: punk-rap
+    language: fr
+    bpm: 145
+    bpm_range: [135, 160]
+    key: E minor
+    positive:
+      - punk rap electro instrumental, fast and raw
+      - distorted saw bass, rave stabs, cheap synths
+      - live-sounding breakbeat drums, loud and dirty
+      - homemade, chaotic, energetic, space for fast rap
+    negative: [cinematic, epic, orchestral, polished, glossy, festival EDM, soft]
+    sections:
+      intro: [rave stab alone, crowd noise cut short]
+      verse: [breakbeat and saw bass, driving]
+      hook: [stabs double, Amen fill, everything louder]
+      breakdown: [drums drop to a kick, bass alone]
+      outro: [abrupt stop]
+    structure: intro:4,verse:16,hook:8,verse:16,hook:8,breakdown:4,outro:4
+
+  dnb-liquid:
+    label: Liquid drum and bass
+    family: dnb
+    language: en
+    bpm: 172
+    bpm_range: [168, 176]
+    key: G minor
+    positive:
+      - liquid drum and bass instrumental
+      - rolling breakbeat, deep sub bass, warm pads
+      - atmospheric, smooth, forward motion
+      - room for a spoken or sung voice
+    negative: [cinematic, epic, orchestral, aggressive neurofunk, harsh]
+    sections:
+      intro: [pads and a filtered break]
+      verse: [full break and sub]
+      hook: [pads open, melodic motif]
+      breakdown: [break out, pads and sub]
+      outro: [pads fade]
+    structure: intro:8,verse:32,hook:16,verse:32,hook:16,breakdown:8,outro:8
+    notes: Bars fly at 172; the structure doubles the bar counts to keep sections rappable.

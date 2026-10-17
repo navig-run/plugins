@@ -1,0 +1,26 @@
+# navig-audio enhancement preset — read-only. Edit it from NAVIG to save your own override.
+format_version: 1
+version: 1
+id: audio-enhance/voice-memo
+name: Voice Memo
+tool: audio.enhance
+layer: config
+category: Restoration — old media
+description: 'Phone voice memos: room and handling noise reduced, handling thumps cut below
+  80 Hz, silence trimmed, levelled for listening.'
+tags:
+- enhance
+- restoration
+- speech
+params:
+  mode: studio
+  category: speech
+  denoise: auto
+  dehum: auto
+  declick: true
+  highpass_hz: 80
+  eq: adaptive
+  compress: gentle
+  target_lufs: -16
+  true_peak_db: -1
+  trim_silence: true

@@ -1,0 +1,176 @@
+{
+  "title": "What can your extensions see?",
+  "episode": "S01·E05",
+  "segments": [
+    {
+      "type": "hook",
+      "title": "Your free VPN can read *every site* you visit",
+      "sub": "See what your extensions can access — **one command**",
+      "art": "kraken"
+    },
+    {
+      "type": "terminal",
+      "cast": "scan.cast",
+      "title": "~ navig antivirus extensions",
+      "step": "navig antivirus extensions",
+      "caption": "What can they *actually* access?",
+      "pace": 4,
+      "hold": 3.0,
+      "dwell": 1.5,
+      "highlight": [
+        "proxy(traffic-MITM)"
+      ],
+      "speech": {
+        "cues": [
+          [
+            "It scans every one of them, and flags what they can reach.",
+            0.803,
+            4.803
+          ],
+          [
+            "Some flags are by design, not malice.",
+            16.33,
+            19.29
+          ],
+          [
+            "Read the notes before you panic.",
+            19.77,
+            21.85
+          ]
+        ],
+        "words": [
+          [
+            "It",
+            0.803,
+            0.963
+          ],
+          [
+            "scans",
+            1.043,
+            1.523
+          ],
+          [
+            "every",
+            1.603,
+            1.923
+          ],
+          [
+            "one",
+            2.083,
+            2.163
+          ],
+          [
+            "of",
+            2.243,
+            2.323
+          ],
+          [
+            "them,",
+            2.443,
+            2.803
+          ],
+          [
+            "and",
+            2.883,
+            2.963
+          ],
+          [
+            "flags",
+            3.043,
+            3.523
+          ],
+          [
+            "what",
+            3.603,
+            3.683
+          ],
+          [
+            "they",
+            3.763,
+            3.843
+          ],
+          [
+            "can",
+            3.923,
+            4.083
+          ],
+          [
+            "reach.",
+            4.283,
+            4.803
+          ],
+          [
+            "Some",
+            16.33,
+            16.65
+          ],
+          [
+            "flags",
+            16.73,
+            17.05
+          ],
+          [
+            "are",
+            17.13,
+            17.21
+          ],
+          [
+            "by",
+            17.29,
+            17.37
+          ],
+          [
+            "design,",
+            17.69,
+            18.33
+          ],
+          [
+            "not",
+            18.41,
+            18.57
+          ],
+          [
+            "malice.",
+            18.73,
+            19.29
+          ],
+          [
+            "Read",
+            19.77,
+            20.01
+          ],
+          [
+            "the",
+            20.05,
+            20.09
+          ],
+          [
+            "notes",
+            20.25,
+            20.57
+          ],
+          [
+            "before",
+            20.65,
+            20.89
+          ],
+          [
+            "you",
+            20.97,
+            21.05
+          ],
+          [
+            "panic.",
+            21.13,
+            21.85
+          ]
+        ]
+      }
+    },
+    {
+      "type": "outro",
+      "cta": "pipx install \"navig[antivirus]\"",
+      "follow": "Read-only scan · follow for one command a day"
+    }
+  ]
+}

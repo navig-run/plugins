@@ -1,0 +1,16 @@
+# Business inquiry acknowledgment — confirm receipt, promise nothing.
+id: business-ack
+title: Business inquiry acknowledgment
+action: send
+category: business_inquiry
+senders: ["*"]            # anyone whose domain authenticates (require_auth)
+require_auth: true
+confidence: 0.75
+delay: 15m
+limits: { per_thread: 1, sender_cooldown: 72h, daily: 20 }
+style: brief
+say: >-
+  Briefly confirm the message was received and that the inquiry will be reviewed.
+  Do not give a turnaround time, a price, a date, or any commitment. Do not ask for anything.
+review_words: []
+notify: true

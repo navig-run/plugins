@@ -1,0 +1,4 @@
+{"version": 2, "width": 44, "height": 40, "timestamp": 1791974212, "title": "navig mobile apps extract", "command": "navig mobile apps extract com.samsung.android.app.notes --udid device-02 -o C:/studio/navig/videos/tiktok-series/e02-android/_device", "env": {"TERM": "xterm-256color", "SHELL": "navig"}, "navig": {"exit": 0, "redactions": 8, "backend": "conpty"}}
+[0.011539, "o", "\u001b[1t\u001b[c\u001b[?1004h\u001b[?9001h"]
+[4.968559, "o", "\u001b[36m→\u001b[0m Extracting com.samsung.android.app.notes →\r\nC:\\studio\\navig\\videos\\tiktok-series\\e02-and\r\nroid\\_device …\r\n"]
+[9.505984, "o", "\u001b[32m✓\u001b[0m Saved: \r\nC:\\studio\\navig\\videos\\tiktok-series\\e02-and\r\nroid\\_device\\com.samsung.android.app.notes.a\r\npk\r\n"]

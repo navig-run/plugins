@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-devnet"
+version = "0.5.0"
+description = "Developer/ops network inspection: DNS/WHOIS/SSL lookups and an SSRF-guarded HTTP repeater — its own navig-devnet command, and `navig devnet` inside navig."
+readme = "README.md"
+authors = [{ name = "NAVIG Development Team", email = "opensource@navig.run" }]
+keywords = ["navig", "cli", "agent", "network", "dns", "whois", "ssl", "devops", "plugin"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+  "Topic :: System :: Networking",
+]
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runs WITHOUT navig: the lookup engine + CLI are pure stdlib/dnspython/rich, and
+# the only navig touch (agent tools) is a guarded optional import loaded lazily by
+# register(). navig installs this (`navig[devnet]`), not the reverse.
+dependencies = [
+  "navig-sdk>=2.7.0",
+  "typer>=0.14.0",
+  "rich>=13.7.0",
+  "dnspython>=2.6.0",
+  "httpx>=0.27",
+]
+
+# Its own command: the same app navig mounts as `navig devnet`.
+[project.scripts]
+navig-devnet = "navig_devnet.cli:main"
+
+# Discovered by navig.core.plugins.load_entry_point_plugins() at gateway boot
+# (and the module registry's CLI-side once-loader); register() adds the free
+# "devnet" module + the agent tools.
+[project.entry-points."navig.plugins"]
+devnet = "navig_devnet.plugin"
+
+# Discovered by navig.cli.registration._entry_point_commands() — the CLI seam.
+[project.entry-points."navig.commands"]
+devnet = "navig_devnet.commands.devnet:devnet_app"
+
+[tool.setuptools.packages.find]
+include = ["navig_devnet*"]
+
+[tool.setuptools.package-data]
+navig_devnet = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-devnet`, no navig needed) AND as `navig devnet` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

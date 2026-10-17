@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navig-bookmarks"
+version = "0.1.0"
+description = "navig bookmarks -- a local bookmark manager: import from any browser or HTML export, full-text search, AI folder plans and tags with your own AI, dead-link checks, duplicate cleanup, and Netscape HTML export with folders."
+keywords = ["navig", "cli", "plugin", "bookmarks", "netscape", "browser", "organize", "dead-links", "dedupe"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: End Users/Desktop",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Utilities",
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "navig" }]
+# Runs WITHOUT navig: storage, paths, console, AI and the SSRF guard all come from
+# navig-sdk, which defers to navig when it is installed. Only credential auto-login on
+# `open` needs navig's browser, and it is reached lazily.
+# 2.17.0: ai.generate(provider=, model=) -- the --provider/--model passthrough.
+dependencies = ["navig-sdk>=2.17.0", "typer>=0.9", "rich>=13.7.0"]
+
+# Its own command: the same app navig mounts as `navig bookmarks`.
+[project.scripts]
+navig-bookmarks = "navig_bookmarks.cli:main"
+
+# NAVIG's CLI mounts every `navig.commands` entry point as a top-level verb
+# (cli/registration.py). Core's `navig links` is a deprecated alias of this app.
+[project.entry-points."navig.commands"]
+bookmarks = "navig_bookmarks.commands.bookmarks:app"
+
+[tool.setuptools.packages.find]
+include = ["navig_bookmarks*"]
+
+[tool.setuptools.package-data]
+# Ship the bundled capability skill (auto-discovered by the agent) in the wheel.
+navig_bookmarks = ["skills/**/*.md"]
+
+[project.urls]
+Homepage = "https://navig.run"
+Documentation = "https://navig.run/docs"
+
+[tool.navig]
+# Runs on its own (`navig-bookmarks`, no navig needed) AND as `navig bookmarks` inside navig.
+# Checked against the package by scripts/check_plugins_publishable.py.
+mode = "standalone"

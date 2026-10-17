@@ -1,0 +1,25 @@
+{
+  "spec": "SCHEMA wave1 SOCIAL-CONTRACT.md §3 — cross-repo hash parity fixture",
+  "computed_by": "C:\\studio\\schema\\promo\\wave1\\navig_contract.content_hash (SCHEMA implementation), 2026-10-15",
+  "expected": "sha256:56378bd7de4305019f9194d5db130179fae5317d1ac8f64a3b15649a459581ad",
+  "manifest": {
+    "titles": {"en": "TRANSMISSION 002"},
+    "captions": {
+      "canonical": "TRANSMISSION 002\n\nNull Island. One buoy named Soul.",
+      "platforms": {"telegram": "<b>TRANSMISSION 002</b>\n\nNull Island. One buoy named Soul."}
+    },
+    "language": "en",
+    "hashtags": ["schema", "ARG", "mystery"],
+    "media": [
+      {"role": "primary", "path": "out/telegram/_send-002.png", "sha256": "f9e978f7f3876dadf65b8626b91cb767d5850504e883e8f1dde7d6c72af2a85d", "state": "derived"},
+      {"role": "variant:instagram", "path": "x.png", "sha256": "", "state": "not_built"},
+      {"role": "variant:youtube", "path": "y.mp4", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "state": "built"}
+    ],
+    "thumbs": [],
+    "subtitles": [],
+    "destinations": [
+      {"network": "telegram", "account": "@sch8ma"},
+      {"network": "youtube", "account": "@sch8ma YouTube"}
+    ]
+  }
+}

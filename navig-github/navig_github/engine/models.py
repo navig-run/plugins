@@ -1,0 +1,555 @@
+"""
+Data models for The GitHub engine.
+
+"""
+
+import threading
+from dataclasses import dataclass, field
+from enum import Enum
+from pathlib import Path
+
+
+class Visibility(str, Enum):
+    """Repository visibility filter."""
+
+    PUBLIC = "public"
+    PRIVATE = "private"
+    ALL = "all"
+
+
+class TargetType(str, Enum):
+    """Type of GitHub target (user or organization)."""
+
+    USER = "user"
+    ORG = "org"
+
+
+class RepositoryCategory(str, Enum):
+    """Category for organizing repositories in backup directory structure."""
+
+    PRIVATE = "private"
+    PUBLIC = "public"
+    STARRED = "starred"
+    WATCHED = "watched"
+    ORGANIZATIONS = "organizations"
+    FORKS = "forks"
+
+
+@dataclass
+class Repository:
+    """
+    Represents a GitHub repository.
+
+    """
+
+    name: str
+    full_name: str
+    owner: str
+    ssh_url: str
+    clone_url: str
+    default_branch: str
+    private: bool = False
+    fork: bool = False
+    archived: bool = False
+    owner_type: str = "User"  # "User" or "Organization"
+
+    @property
+    def local_path(self) -> str:
+        """Get the local path component for this repo (owner/name)."""
+        if self.owner:
+            return f"{self.owner}/{self.name}"
+        else:
+            # Flat structure: just the repo name
+            return self.name
+
+    @property
+    def is_org_repo(self) -> bool:
+        """Check if this repository belongs to an organization."""
+        return self.owner_type.lower() == "organization"
+
+
+@dataclass
+class Config:
+    """
+    Configuration for The GitHub engine operations.
+
+    """
+
+    # Target information
+    target_type: TargetType
+    target_name: str
+
+    # Destination
+    dest: Path
+
+    # Authentication
+    token: str | None = None
+
+    # Filtering options
+    visibility: Visibility = Visibility.ALL
+    include_forks: bool = False
+    include_archived: bool = False
+    exclude_org_repos: bool = False  # Exclude organization repositories
+    exclude_repos: list[str] | None = None  # List of repo names to exclude
+    name_regex: str | None = None  # Regex pattern to filter repo names
+
+    # Incremental backup options
+    incremental: bool = False  # Only backup repos changed since last backup
+
+    # Execution options
+    dry_run: bool = False
+    max_workers: int = 4
+    skip_existing: bool = False  # Skip repos that already exist locally
+
+    # Git clone options
+    use_ssh: bool = True  # Prefer SSH, fallback to HTTPS
+    bare: bool = False  # Create bare/mirror clones
+    lfs: bool = False  # Use Git LFS for cloning
+
+    # Update/divergence policy (for keeping a backup mirroring through local drift)
+    force: bool = False  # Force local repos to match upstream (reset --hard + clean). DESTRUCTIVE to local edits.
+    ff_only: bool = False  # Only fast-forward existing repos; report divergence instead of merging
+
+    # GitHub Enterprise support
+    github_host: str | None = None  # GitHub Enterprise hostname (deprecated, use github_api_url)
+    github_api_url: str = "https://api.github.com"  # GitHub API base URL (supports Enterprise)
+
+    # Repository categorization (for organizing backups by type)
+    repository_category: RepositoryCategory | None = None
+    disable_categorization: bool = False  # Disable category subdirectories (for search results)
+    flat: bool = False  # Clone repos FLAT — directly as <dest>/<repo>, no repos/<vis>/<owner> nesting
+
+    def __post_init__(self) -> None:
+        """Validate and normalize configuration."""
+        # Ensure dest is a Path object
+        if not isinstance(self.dest, Path):
+            self.dest = Path(self.dest)
+
+        # Expand user home directory
+        self.dest = self.dest.expanduser()
+        
+        # Initialize exclude_repos as empty list if None
+        if self.exclude_repos is None:
+            self.exclude_repos = []
+
+    def get_github_url(self) -> str:
+        """
+        Get the GitHub base URL for git operations (not API URL).
+        
+        Converts API URLs to git URLs:
+        - https://api.github.com -> https://github.com
+        - https://api.acme.ghe.com -> https://acme.ghe.com
+        - https://github.company.com/api/v3 -> https://github.company.com
+        
+        Returns:
+            Base GitHub URL for git clone operations
+        """
+        # If using custom API URL
+        if self.github_api_url and self.github_api_url != "https://api.github.com":
+            api_url = self.github_api_url.rstrip('/')
+            
+            # Remove /api/v3 suffix if present (GitHub Enterprise Server format)
+            if api_url.endswith("/api/v3"):
+                return api_url[:-7]  # Remove /api/v3
+            
+            # Convert api. subdomain to root domain (GitHub Enterprise Cloud format)
+            # https://api.acme.ghe.com -> https://acme.ghe.com
+            if "api." in api_url:
+                return api_url.replace("api.", "")
+            
+            # Otherwise, use as-is
+            return api_url
+        
+        # Fallback to legacy github_host
+        if self.github_host:
+            return f"https://{self.github_host}"
+        
+        # Default to public GitHub
+        return "https://github.com"
+
+    def get_repo_category_path(self, repo: Repository) -> Path:
+        """
+        Get the categorized path for a repository based on its attributes.
+
+        Categorization priority:
+        1. If disable_categorization is True, return just the repo local_path
+        2. If repository_category is set (starred/watched), use that
+        3. If repo is from an organization, use organizations/<org-name>
+        4. If repo is a fork, use forks
+        5. Otherwise, use private or public based on visibility
+
+        Returns:
+            Path relative to dest that includes category subdirectory
+        """
+        # FLAT: clone straight into <dest>/<repo> — no repos/<vis>/<owner> nesting,
+        # no owner subdir. Matches an existing flat backup so pulls update in place.
+        if self.flat:
+            return Path(repo.name)
+
+        # If categorization is disabled (e.g., for search results), return just the local path
+        if self.disable_categorization:
+            return Path(repo.local_path)
+
+        # If a specific category is set (e.g., starred, watched), use it
+        if self.repository_category:
+            return Path("repos") / self.repository_category.value / repo.local_path
+
+        # Check if it's an organization repository
+        if repo.is_org_repo:
+            return Path("repos") / RepositoryCategory.ORGANIZATIONS.value / repo.local_path
+
+        # Check if it's a fork
+        if repo.fork:
+            return Path("repos") / RepositoryCategory.FORKS.value / repo.local_path
+
+        # Default to private/public based on visibility
+        category = RepositoryCategory.PRIVATE if repo.private else RepositoryCategory.PUBLIC
+        return Path("repos") / category.value / repo.local_path
+
+
+@dataclass
+class MirrorResult:
+    """
+    Result of a single repository mirror operation.
+
+    """
+
+    repo: Repository
+    success: bool
+    action: str  # "cloned", "updated", "skipped", "failed"
+    message: str = ""
+    error: str | None = None
+
+
+@dataclass
+class MirrorSummary:
+    """
+    Summary of all mirror operations.
+
+    
+    Note: This class is thread-safe. The add_result method uses a lock
+    to ensure correct counting when called from multiple threads.
+    """
+
+    total: int = 0
+    cloned: int = 0
+    updated: int = 0
+    skipped: int = 0
+    failed: int = 0
+    errors: list[str] = field(default_factory=list)
+    _lock: threading.Lock = field(default_factory=threading.Lock, repr=False, compare=False)
+
+    def add_result(self, result: MirrorResult) -> None:
+        """Add a result to the summary (thread-safe)."""
+        with self._lock:
+            self.total += 1
+
+            if result.success:
+                if result.action == "cloned":
+                    self.cloned += 1
+                elif result.action == "updated":
+                    self.updated += 1
+                elif result.action == "skipped":
+                    self.skipped += 1
+            else:
+                self.failed += 1
+                if result.error:
+                    self.errors.append(f"{result.repo.full_name}: {result.error}")
+
+    @property
+    def success_count(self) -> int:
+        """Total successful operations."""
+        return self.cloned + self.updated + self.skipped
+
+    @property
+    def has_failures(self) -> bool:
+        """Check if any operations failed."""
+        return self.failed > 0
+
+
+@dataclass
+class UserProfile:
+    """
+    Represents a GitHub user profile.
+
+    """
+
+    login: str
+    name: str | None
+    email: str | None
+    bio: str | None
+    company: str | None
+    location: str | None
+    blog: str | None
+    twitter_username: str | None
+    public_repos: int
+    public_gists: int
+    followers: int
+    following: int
+    created_at: str
+    updated_at: str
+    hireable: bool | None = None
+    avatar_url: str | None = None
+    html_url: str | None = None
+
+
+@dataclass
+class RepositorySecret:
+    """
+    Represents a GitHub Actions repository secret (name only, not value).
+
+    """
+
+    name: str
+    created_at: str
+    updated_at: str
+
+
+@dataclass
+class Issue:
+    """
+    Represents a GitHub issue.
+
+    """
+
+    number: int
+    title: str
+    state: str  # "open" or "closed"
+    user: str  # Username of creator
+    body: str | None
+    labels: list[str]
+    assignees: list[str]
+    created_at: str
+    updated_at: str
+    closed_at: str | None
+    comments_count: int
+    html_url: str
+    comments: list[dict] = field(default_factory=list)  # Optional: include comments
+
+
+@dataclass
+class PullRequest:
+    """
+    Represents a GitHub pull request.
+
+    """
+
+    number: int
+    title: str
+    state: str  # "open", "closed", or "merged"
+    user: str  # Username of creator
+    body: str | None
+    labels: list[str]
+    assignees: list[str]
+    created_at: str
+    updated_at: str
+    closed_at: str | None
+    merged_at: str | None
+    merged: bool
+    draft: bool
+    head_ref: str  # Source branch
+    base_ref: str  # Target branch
+    commits_count: int
+    comments_count: int
+    review_comments_count: int
+    html_url: str
+    diff_url: str
+    patch_url: str
+    comments: list[dict] = field(default_factory=list)  # Optional: include comments
+
+
+@dataclass
+class Workflow:
+    """
+    Represents a GitHub Actions workflow file.
+
+    """
+
+    name: str
+    path: str
+    state: str  # "active", "disabled_manually", etc.
+    created_at: str
+    updated_at: str
+    html_url: str
+    badge_url: str
+
+
+@dataclass
+class WorkflowRun:
+    """
+    Represents a GitHub Actions workflow run.
+
+    """
+
+    id: int
+    name: str
+    status: str  # "completed", "in_progress", "queued"
+    conclusion: str | None  # "success", "failure", "cancelled", etc.
+    workflow_name: str
+    event: str  # "push", "pull_request", etc.
+    created_at: str
+    updated_at: str
+    run_number: int
+    html_url: str
+
+
+@dataclass
+class Release:
+    """
+    Represents a GitHub release.
+
+    """
+
+    id: int
+    tag_name: str
+    name: str | None
+    body: str | None  # Release notes
+    draft: bool
+    prerelease: bool
+    created_at: str
+    published_at: str | None
+    author: str  # Username
+    html_url: str
+    tarball_url: str
+    zipball_url: str
+    assets: list[dict] = field(default_factory=list)  # Release assets
+
+
+@dataclass
+class ReleaseAsset:
+    """
+    Represents a GitHub release asset (binary file).
+
+    """
+
+    id: int
+    name: str
+    label: str | None
+    content_type: str
+    size: int  # Size in bytes
+    download_count: int
+    created_at: str
+    updated_at: str
+    browser_download_url: str
+
+
+@dataclass
+class Label:
+    """
+    Represents a GitHub label.
+
+    """
+
+    id: int
+    name: str
+    description: str | None
+    color: str  # Hex color without #
+
+
+@dataclass
+class Milestone:
+    """
+    Represents a GitHub milestone.
+
+    """
+
+    id: int
+    number: int
+    title: str
+    description: str | None
+    state: str  # "open" or "closed"
+    open_issues: int
+    closed_issues: int
+    created_at: str
+    updated_at: str
+    due_on: str | None
+    closed_at: str | None
+    html_url: str
+
+
+@dataclass
+class Webhook:
+    """
+    Represents a GitHub repository webhook.
+
+    """
+
+    id: int
+    name: str
+    active: bool
+    events: list[str]
+    config: dict  # URL, content_type, etc. (secret redacted)
+    created_at: str
+    updated_at: str
+
+
+@dataclass
+class Follower:
+    """
+    Represents a GitHub follower/following relationship.
+
+    """
+
+    login: str
+    id: int
+    avatar_url: str
+    html_url: str
+    type: str  # "User" or "Organization"
+
+
+@dataclass
+class Discussion:
+    """
+    Represents a GitHub Discussion.
+
+    """
+
+    id: str  # GraphQL node ID
+    number: int
+    title: str
+    body: str | None
+    author: str  # Username
+    category: str
+    answer_chosen: bool
+    locked: bool
+    created_at: str
+    updated_at: str
+    html_url: str
+    comments_count: int
+    upvote_count: int
+
+
+@dataclass
+class Project:
+    """
+    Represents a GitHub Project (v2).
+
+    """
+
+    id: str  # GraphQL node ID
+    number: int
+    title: str
+    description: str | None
+    public: bool
+    closed: bool
+    created_at: str
+    updated_at: str
+    html_url: str
+    items_count: int
+    fields: list[dict] = field(default_factory=list)  # Project fields
+
+
+@dataclass
+class ProjectItem:
+    """
+    Represents an item in a GitHub Project.
+
+    """
+
+    id: str  # GraphQL node ID
+    type: str  # "ISSUE", "PULL_REQUEST", "DRAFT_ISSUE"
+    title: str
+    status: str | None  # Status field value
+    created_at: str
+    updated_at: str
+    content_id: str | None  # Issue/PR node ID if linked

@@ -1,0 +1,10 @@
+{"version": 2, "width": 44, "height": 40, "timestamp": 1791974222, "title": "navig mobile osint apps", "command": "navig mobile osint apps com.samsung.android.app.notes --udid device-02", "env": {"TERM": "xterm-256color", "SHELL": "navig"}, "navig": {"exit": 0, "redactions": 8, "backend": "conpty"}}
+[0.01007, "o", "\u001b[1t\u001b[c\u001b[?1004h\u001b[?9001h"]
+[4.990513, "o", "\u001b[34mℹ\u001b[0m  com.samsung.android.app.notes — \u001b[1;36m7\u001b[0m \r\nhigh-risk \u001b[1;35mpermission\u001b[0m\u001b[1m(\u001b[0ms\u001b[1m)\u001b[0m of \u001b[1;36m175\u001b[0m declared\r\n"]
+[5.009198, "o", "\u001b[0;90m  • all-files storage   (android.permission.MANAGE_EXTERNAL_STORAGE)\u001b[0m\r\n"]
+[5.012265, "o", "\u001b[0;90m  • camera   (android.permission.CAMERA)\u001b[0m\r\n"]
+[5.015554, "o", "\u001b[0;90m  • draw over other apps   (android.permission.SYSTEM_ALERT_WINDOW)\u001b[0m\r\n"]
+[5.020143, "o", "\u001b[0;90m  • list all installed apps   (android.permission.QUERY_ALL_PACKAGES)\u001b[0m\r\n"]
+[5.024792, "o", "\u001b[0;90m  • microphone   (android.permission.RECORD_AUDIO)\u001b[0m\r\n"]
+[5.029484, "o", "\u001b[0;90m  • phone identity/state   (android.permission.READ_PHONE_STATE)\u001b[0m\r\n"]
+[5.034262, "o", "\u001b[0;90m  • read storage   (android.permission.READ_EXTERNAL_STORAGE)\u001b[0m\r\n"]

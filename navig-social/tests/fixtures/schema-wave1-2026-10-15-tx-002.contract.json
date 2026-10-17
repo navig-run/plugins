@@ -1,0 +1,112 @@
+{
+ "project_id": "schema-wave1",
+ "campaign_id": "wave1-launch",
+ "transmission_id": "tx-002",
+ "content_id": "schema:wave1:2026-10-15-tx-002",
+ "version": 1,
+ "titles": {
+  "en": "TRANSMISSION 002"
+ },
+ "captions": {
+  "canonical": "TRANSMISSION 002\n\nNull Island. One buoy named Soul.",
+  "platforms": {
+   "telegram": "<b>TRANSMISSION 002</b>\n\nNull Island. One buoy named Soul."
+  }
+ },
+ "language": "en",
+ "hashtags": [],
+ "media": [
+  {
+   "role": "primary",
+   "path": "out\\telegram\\_pending\\2026-10-15-tx-002\\_send-002.png",
+   "sha256": "f9e978f7f3876dadf65b8626b91cb767d5850504e883e8f1dde7d6c72af2a85d",
+   "state": "derived"
+  },
+  {
+   "role": "variant:instagram",
+   "path": "out\\instagram\\stories\\transmission-002-story.png",
+   "sha256": "add1a464198de7887cb501ee138695b797b56c92efc1540a53a8f4c9f3b3b0c1",
+   "state": "built"
+  },
+  {
+   "role": "variant:vk",
+   "path": "out\\vk\\stories\\transmission-002-story.png",
+   "sha256": "d80ace93fa53a32288dbfba13d800ac438d6a4e36db06864dddd95e4834fa59f",
+   "state": "built"
+  }
+ ],
+ "thumbs": [],
+ "subtitles": [],
+ "destinations": [
+  {
+   "network": "telegram",
+   "account": "@sch8ma",
+   "publish_mode": "auto_schema",
+   "connect_state": "ready",
+   "schedule": {
+    "at": "2026-10-15T10:00",
+    "timezone": "Europe/Paris",
+    "kind": "once",
+    "cadence_ref": "WHEN[telegram]"
+   },
+   "approval_policy": "owner_required",
+   "expiration_policy": "slot_day_end",
+   "publication_prefs": {
+    "parse_mode": "HTML",
+    "hashtags": false
+   }
+  },
+  {
+   "network": "instagram",
+   "account": "Instagram — Reels/Stories",
+   "publish_mode": "manual_handoff",
+   "connect_state": "pending_connect",
+   "schedule": {
+    "at": "2026-10-15T10:00",
+    "timezone": "Europe/Paris",
+    "kind": "once",
+    "cadence_ref": "WHEN[instagram]"
+   },
+   "approval_policy": "owner_required",
+   "expiration_policy": "none",
+   "publication_prefs": {}
+  },
+  {
+   "network": "vk",
+   "account": "VK community",
+   "publish_mode": "manual_handoff",
+   "connect_state": "manual",
+   "schedule": {
+    "at": "2026-10-15T10:00",
+    "timezone": "Europe/Paris",
+    "kind": "once",
+    "cadence_ref": "WHEN[vk]"
+   },
+   "approval_policy": "owner_required",
+   "expiration_policy": "none",
+   "publication_prefs": {}
+  }
+ ],
+ "campaign_metadata": {
+  "batch": "wave1",
+  "phase_gate": "phase1_mystery_only",
+  "source_slot": "2026-10-15-tx-002",
+  "builder": "navig_contract.py"
+ },
+ "created_at": "2026-10-15T00:53:49.943203+00:00",
+ "content_hash": "sha256:a6e41b531b52ab7d6776dc5629e3b6c31b581c8037870847b72402ad50cf3326",
+ "approval": {
+  "required": true,
+  "state": "pending",
+  "bound_hash": "sha256:a6e41b531b52ab7d6776dc5629e3b6c31b581c8037870847b72402ad50cf3326"
+ },
+ "versions": [
+  {
+   "version": 1,
+   "content_hash": "sha256:a6e41b531b52ab7d6776dc5629e3b6c31b581c8037870847b72402ad50cf3326",
+   "created_at": "2026-10-15T00:53:49.943203+00:00",
+   "reason": "created"
+  }
+ ],
+ "current_version": 1
+}
